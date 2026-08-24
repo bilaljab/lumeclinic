@@ -62,12 +62,12 @@ export async function Packages({ lang }: { lang: keyof LocalizedText }) {
                       ))}
                     </ul>
                   </dd>
-                  {includedTreatments.length > 0 ? (
-                    <p className="mt-1 text-label uppercase tracking-label text-neutral">
-                      {includedTreatments.join(" · ")}
-                    </p>
-                  ) : null}
                 </dl>
+                {includedTreatments.length > 0 ? (
+                  <p className="-mt-1 text-label uppercase tracking-label text-neutral">
+                    {includedTreatments.join(" · ")}
+                  </p>
+                ) : null}
 
                 <Button
                   href={buildWhatsAppLink(lang, packageWhatsAppMessage(pkg.name))}

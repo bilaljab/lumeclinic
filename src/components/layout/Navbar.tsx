@@ -28,14 +28,14 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {anchors.map((a) => (
-            <Link key={a.key} href={a.href} className="text-label uppercase">
+            <Link key={a.key} href={a.href} className="py-1 text-label uppercase">
               {t(a.key)}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-6 md:flex">
-          <Link href={pathname} locale={otherLocale} className="text-label uppercase">
+          <Link href={pathname} locale={otherLocale} className="py-1 text-label uppercase">
             {t("switchLanguage")}
           </Link>
           <Button href="/#booking-form" variant="primary">
@@ -46,11 +46,11 @@ export function Navbar() {
         <MobileMenuTrigger label={t("menu")} closeLabel={t("closeMenu")}>
           <div className="flex flex-col gap-6">
             {anchors.map((a) => (
-              <Link key={a.key} href={a.href} className="text-label uppercase">
+              <Link key={a.key} href={a.href} className="py-1 text-label uppercase">
                 {t(a.key)}
               </Link>
             ))}
-            <Link href={pathname} locale={otherLocale} className="text-label uppercase">
+            <Link href={pathname} locale={otherLocale} className="py-1 text-label uppercase">
               {t("switchLanguage")}
             </Link>
             <Button href="/#booking-form" variant="primary">

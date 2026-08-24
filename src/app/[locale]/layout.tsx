@@ -24,7 +24,7 @@ export async function generateMetadata({
   const { locale } = await params;
   return {
     title: `${siteConfig.brandName} — ${siteConfig.tagline[locale as "en" | "ar"]}`,
-    description: siteConfig.positioning[locale as "en" | "ar"],
+    description: siteConfig.metaDescription[locale as "en" | "ar"],
   };
 }
 

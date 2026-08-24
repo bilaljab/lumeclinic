@@ -59,7 +59,7 @@ export function Footer() {
           <EditorialLink href={siteConfig.social.tiktok} external>
             TikTok
           </EditorialLink>
-          <Link href={pathname} locale={otherLocale} className="mt-2 text-label uppercase tracking-label underline underline-offset-4">
+          <Link href={pathname} locale={otherLocale} className="mt-2 py-1 text-label uppercase tracking-label underline underline-offset-4">
             {nav("switchLanguage")}
           </Link>
         </div>

@@ -15,6 +15,11 @@ export const siteConfig = {
     en: "Skin. Science. Results.",
     ar: "البشرة. العلم. النتائج.",
   } satisfies LocalizedText,
+  /** Longer descriptive copy for the page <meta description> — positioning above is a punchy on-page tagline, too short to serve as a search-result snippet. */
+  metaDescription: {
+    en: "LUMÉ is a premium aesthetic clinic in Riyadh offering personalized skin consultations and honest, results-focused treatment plans.",
+    ar: "⁦LUMÉ⁩ عيادة تجميل راقية في الرياض تقدّم استشارات جلدية شخصية وخطط علاج واضحة تركّز على النتائج الحقيقية.",
+  } satisfies LocalizedText,
   logo: {
     wordmark: "LUMÉ",
     src: "/logo.svg",
