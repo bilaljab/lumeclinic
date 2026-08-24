@@ -145,10 +145,9 @@ html {
 }
 
 /*
- * Grain texture for the specimen-plate placeholder-image system (no
- * photography yet — see project-state.md). Fine fractal-noise overlay,
- * kept low-opacity so plates read as an intentional editorial material
- * rather than a broken image.
+ * Grain texture overlay — fine fractal-noise, kept low-opacity so full-bleed
+ * imagery (Hero, Final CTA) reads as an intentional editorial material
+ * rather than a flat photo.
  */
 .grain::before {
   content: "";
@@ -158,6 +157,21 @@ html {
   opacity: 0.06;
   mix-blend-mode: overlay;
   pointer-events: none;
+}
+
+/* native date-input chrome otherwise renders as unstyled default browser UI
+   next to the design system's other form fields */
+input[type="date"] {
+  color-scheme: light;
+  accent-color: var(--color-accent);
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity var(--duration-micro) ease-out;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 /* horizontal scroll-snap rails (Featured Treatments) hide the native scrollbar but stay keyboard/touch scrollable */

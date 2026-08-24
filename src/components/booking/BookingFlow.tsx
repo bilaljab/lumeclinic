@@ -40,7 +40,7 @@ function ProgressRail({ current, t }: { current: number; t: T }) {
 }
 
 const Field = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }>(
-  function Field({ label, error, id, ...props }, ref) {
+  function Field({ label, error, id, className, ...props }, ref) {
     return (
       <div className="flex flex-col gap-2">
         <label htmlFor={id} className="text-label uppercase tracking-label text-neutral">
@@ -49,7 +49,10 @@ const Field = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>
         <input
           id={id}
           ref={ref}
-          className="border border-border bg-canvas px-4 py-3 text-body focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+          className={cn(
+            "border border-border bg-canvas px-4 py-3 text-body focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
+            className,
+          )}
           {...props}
         />
         {error ? <p className="text-label text-accent">{error}</p> : null}

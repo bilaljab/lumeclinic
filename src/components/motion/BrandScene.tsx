@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import type { Mesh } from "three";
+import { getColor } from "@/config/theme";
 
 /**
  * Ashima/McEwan simplex noise (public domain) — one hand-rolled GLSL function,
@@ -83,14 +84,18 @@ function OrganicBlob({ sectionId }: { sectionId: string }) {
   });
 
   return (
-    <mesh ref={meshRef}>
+    // Tapered toward the top and elongated on Y: a suspended serum droplet
+    // reads as "science made visible" for a skincare brand, not a generic
+    // abstract blob — see the shader's taper term below for how the pinch
+    // is formed.
+    <mesh ref={meshRef} scale={[0.85, 1.3, 0.85]}>
       {/* detail 5 (~10k vertices): a lower subdivision reads as the banned
           low-poly-diorama look once noise displaces each vertex along its
           own normal — this needs enough density for the surface to stay
           soft and liquid rather than faceted. */}
       <icosahedronGeometry args={[1.4, 5]} />
       <meshStandardMaterial
-        color="#5c2333"
+        color={getColor("accent")}
         roughness={0.25}
         metalness={0.05}
         onBeforeCompile={(shader) => {
@@ -105,8 +110,12 @@ function OrganicBlob({ sectionId }: { sectionId: string }) {
             "#include <begin_vertex>",
             `
             #include <begin_vertex>
-            float n = snoise(normal * 1.1 + uTime * 0.1);
-            transformed += normal * n * uIntensity;
+            float tip = smoothstep(-1.4, 1.4, position.y);
+            float taper = mix(1.0, 0.5, pow(tip, 1.6));
+            transformed.xz *= taper;
+            float freq = mix(0.7, 1.7, tip);
+            float n = snoise(normal * freq + uTime * 0.1);
+            transformed += normal * n * uIntensity * mix(1.0, 0.45, tip);
             `,
           );
         }}
@@ -128,7 +137,7 @@ export function BrandScene({ sectionId }: { sectionId: string }) {
     <Canvas camera={{ position: [0, 0, 3.4], fov: 40 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
       <ambientLight intensity={0.6} />
       <directionalLight position={[2, 3, 4]} intensity={1.4} />
-      <directionalLight position={[-3, -2, -2]} intensity={0.4} color="#f6f2ed" />
+      <directionalLight position={[-3, -2, -2]} intensity={0.4} color={getColor("canvas")} />
       <OrganicBlob sectionId={sectionId} />
     </Canvas>
   );

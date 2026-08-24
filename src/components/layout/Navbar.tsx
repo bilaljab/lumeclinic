@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/Button";
 import { MobileMenuTrigger } from "./MobileMenuTrigger";
 
@@ -23,7 +24,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-border bg-canvas/95 backdrop-blur-sm">
       <div className="relative mx-auto flex max-w-contained items-center justify-between px-page-x-sm py-4 md:px-page-x">
         <Link href="/" className="font-display text-display-m">
-          LUMÉ
+          {siteConfig.logo.wordmark}
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
