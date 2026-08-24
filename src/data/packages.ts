@@ -36,8 +36,8 @@ export const packages: Package[] = [
     slug: "the-lume-contour",
     name: { en: "The LUMÉ Contour", ar: "برنامج ⁦LUMÉ⁩ كونتور" },
     description: {
-      en: "A body-contouring program built around definition, not transformation — enhancing the silhouette you already have.",
-      ar: "برنامج نحت جسم يركّز على تحديد القوام لا تغييره، لإبراز جمال قوامك الحالي.",
+      en: "A body-contouring program focused on definition, refining the silhouette you already have.",
+      ar: "برنامج نحت جسم يركّز على تحديد القوام، لإبراز جمال قوامك الحالي.",
     },
     includes: [
       { en: "Personalized consultation", ar: "استشارة مخصصة" },

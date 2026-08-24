@@ -10,6 +10,7 @@ import { Packages } from "@/components/packages/Packages";
 import { Trust } from "@/components/sections/Trust";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { BookingSection } from "@/components/booking/BookingSection";
+import { BookingIntentProvider } from "@/components/booking/BookingIntentContext";
 import type { LocalizedText } from "@/data/types";
 
 export default async function HomePage({
@@ -21,7 +22,7 @@ export default async function HomePage({
   const lang = locale as keyof LocalizedText;
 
   return (
-    <>
+    <BookingIntentProvider>
       <Hero lang={lang} />
       <BrandStatement lang={lang} />
       <TreatmentExplorer />
@@ -34,6 +35,6 @@ export default async function HomePage({
       <Trust lang={lang} />
       <FinalCta lang={lang} />
       <BookingSection lang={lang} />
-    </>
+    </BookingIntentProvider>
   );
 }

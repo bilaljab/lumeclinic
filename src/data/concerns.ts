@@ -21,6 +21,30 @@ export const concernOrder: Concern[] = [
   "rejuvenation",
 ];
 
+/**
+ * Choice architecture (post-audit P1): the Explorer's 7 individual concern
+ * chips plus "All" exceeded the ~4-chunk working-memory guideline. Grouping
+ * into 4 meaningful clusters (+ All) keeps every concern reachable — nothing
+ * removed — while cutting the number of decisions a visitor scans at once.
+ */
+export type ConcernGroup = "glow-hydration" | "clarity" | "renewal" | "contouring";
+
+export const concernGroups: Record<ConcernGroup, Concern[]> = {
+  "glow-hydration": ["glow", "hydration"],
+  clarity: ["acne", "pigmentation"],
+  renewal: ["fine-lines", "rejuvenation"],
+  contouring: ["contouring"],
+};
+
+export const concernGroupLabels: Record<ConcernGroup, LocalizedText> = {
+  "glow-hydration": { en: "Glow & Hydration", ar: "الإشراقة والترطيب" },
+  clarity: { en: "Clarity", ar: "النقاء" },
+  renewal: { en: "Renewal", ar: "التجديد" },
+  contouring: { en: "Contouring", ar: "النحت" },
+};
+
+export const concernGroupOrder: ConcernGroup[] = ["glow-hydration", "clarity", "renewal", "contouring"];
+
 /** Featured Treatments' image caption (raw category slug rendered untranslated on /ar — Phase 05 known issue). */
 export const categoryLabels: Record<TreatmentCategory, LocalizedText> = {
   skin: { en: "Skin", ar: "البشرة" },

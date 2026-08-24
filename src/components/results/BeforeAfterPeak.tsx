@@ -52,30 +52,39 @@ export async function BeforeAfterPeak({ lang }: { lang: keyof LocalizedText }) {
           />
         </div>
 
-        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+        {/* Not the engine's own .sc-scrim--lead/--trail here: those color-mix
+            against --sc-canvas, which html:root remaps to our cream --color-
+            canvas for the rest of the page — that would paint a light scrim
+            behind light text. Ink-keyed gradient instead. */}
+        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
 
         <div className="sc-copy sc-copy--lead" data-sc-cue="0 0.78 0">
-          <h2 className="font-display text-display-l text-canvas" data-sc-kinetic="lines">
-            {t("peakHeading")}
-          </h2>
-          <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-label uppercase tracking-label text-canvas/70">
-            <div className="flex gap-2">
-              <dt className="text-canvas/50">{t("treatmentLabel")}</dt>
-              <dd>{treatment.name[lang]}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="text-canvas/50">{t("doctorLabel")}</dt>
-              <dd>{doctor.name[lang]}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="text-canvas/50">{t("sessionsLabel")}</dt>
-              <dd>{peakResult.sessions}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="text-canvas/50">{t("timeframeLabel")}</dt>
-              <dd>{peakResult.timeframe[lang]}</dd>
-            </div>
-          </dl>
+          {/* Glass panel: contrast that holds regardless of what's under the
+              scrub at any given scroll position, independent of the gradient
+              layers above (which darken the frame, not guarantee a floor). */}
+          <div className="rounded-sm bg-ink/45 px-6 py-5 backdrop-blur-md">
+            <h2 className="font-display text-display-l text-canvas" data-sc-kinetic="lines">
+              {t("peakHeading")}
+            </h2>
+            <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-label uppercase tracking-label text-canvas/70">
+              <div className="flex gap-2">
+                <dt className="text-canvas/50">{t("treatmentLabel")}</dt>
+                <dd>{treatment.name[lang]}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-canvas/50">{t("doctorLabel")}</dt>
+                <dd>{doctor.name[lang]}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-canvas/50">{t("sessionsLabel")}</dt>
+                <dd>{peakResult.sessions}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-canvas/50">{t("timeframeLabel")}</dt>
+                <dd>{peakResult.timeframe[lang]}</dd>
+              </div>
+            </dl>
+          </div>
         </div>
 
         <span className="pointer-events-none absolute bottom-6 end-6 z-20 rounded-xs bg-ink/80 px-2 py-1 text-label uppercase tracking-label text-canvas">

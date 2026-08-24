@@ -29,7 +29,7 @@ export function BrandStatement({ lang }: { lang: keyof LocalizedText }) {
     <section
       id="brand-statement"
       data-sc-act="pin"
-      data-sc-span="3"
+      data-sc-span="2"
       data-sc-mobile-flow
       className="bg-canvas"
     >

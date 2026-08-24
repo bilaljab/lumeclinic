@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { forwardRef, useEffect, useRef, useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
@@ -8,13 +8,17 @@ import { cn } from "@/lib/cn";
 import { zodResolver } from "@/lib/formResolver";
 import { doctors } from "@/data/doctors";
 import { treatments } from "@/data/treatments";
-import type { LocalizedText } from "@/data/types";
+import { packages } from "@/data/packages";
+import { categoryLabels } from "@/data/concerns";
+import type { LocalizedText, TreatmentCategory } from "@/data/types";
 import { bookingWhatsAppMessage, buildWhatsAppLink } from "@/lib/whatsapp";
+import { useBookingIntent } from "./BookingIntentContext";
 import { bookingDefaults, bookingSchema, stepFields, type BookingFormValues } from "./schema";
 
 type T = ReturnType<typeof useTranslations>;
 
 const STEP_COUNT = stepFields.length; // 4 form steps; a 5th "confirm" state follows submission
+const TREATMENT_CATEGORY_ORDER: TreatmentCategory[] = ["skin", "laser", "injectables", "body", "wellness"];
 
 function ProgressRail({ current, t }: { current: number; t: T }) {
   const labels = ["stepTreatment", "stepDoctor", "stepDate", "stepDetails", "stepConfirm"] as const;
@@ -91,6 +95,7 @@ export function BookingFlow() {
     handleSubmit,
     trigger,
     watch,
+    setValue,
     setFocus,
     formState: { errors },
   } = useForm<BookingFormValues>({
@@ -98,6 +103,31 @@ export function BookingFlow() {
     defaultValues: bookingDefaults,
     mode: "onBlur",
   });
+
+  const { intent } = useBookingIntent();
+  const appliedIntent = useRef(false);
+
+  // Runs once, the first time a CTA elsewhere on the page records an intent —
+  // prefills the fields already answered and skips straight past those steps,
+  // so the visitor is never asked to re-pick a treatment/doctor they already
+  // chose in the Explorer, Doctors, or Packages section.
+  useEffect(() => {
+    const hasIntent = intent.treatmentSlug || intent.doctorSlug || intent.packageSlug;
+    if (!hasIntent || appliedIntent.current) return;
+    appliedIntent.current = true;
+
+    if (intent.treatmentSlug) setValue("treatmentSlug", intent.treatmentSlug);
+    if (intent.doctorSlug) setValue("doctorSlug", intent.doctorSlug);
+    if (intent.packageSlug) setValue("packageSlug", intent.packageSlug);
+
+    if (intent.doctorSlug) setStep(2);
+    else if (intent.treatmentSlug) setStep(1);
+  }, [intent, setValue]);
+
+  const intentPackage = intent.packageSlug ? packages.find((p) => p.slug === intent.packageSlug) : undefined;
+  const intentTreatment = intent.treatmentSlug
+    ? treatments.find((tr) => tr.slug === intent.treatmentSlug)
+    : undefined;
 
   async function goNext() {
     const fields = stepFields[step];
@@ -117,6 +147,7 @@ export function BookingFlow() {
   if (submitted) {
     const treatment = treatments.find((tr) => tr.slug === submitted.treatmentSlug);
     const doctor = doctors.find((d) => d.slug === submitted.doctorSlug);
+    const pkg = submitted.packageSlug ? packages.find((p) => p.slug === submitted.packageSlug) : undefined;
 
     return (
       <div className="flex flex-col gap-6">
@@ -125,6 +156,12 @@ export function BookingFlow() {
         <p className="max-w-md text-body text-ink/80">{t("confirmBody")}</p>
 
         <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-border pt-4 text-body">
+          {pkg ? (
+            <>
+              <dt className="text-label uppercase tracking-label text-neutral">{t("stepPackage")}</dt>
+              <dd>{pkg.name[lang]}</dd>
+            </>
+          ) : null}
           <dt className="text-label uppercase tracking-label text-neutral">{t("stepTreatment")}</dt>
           <dd>{treatment ? treatment.name[lang] : t("notSure")}</dd>
           <dt className="text-label uppercase tracking-label text-neutral">{t("stepDoctor")}</dt>
@@ -166,8 +203,16 @@ export function BookingFlow() {
     <form onSubmit={handleSubmit((values) => setSubmitted(values))} className="flex flex-col gap-8">
       <ProgressRail current={step} t={t} />
 
+      {intentTreatment || intentPackage ? (
+        <p className="border border-accent/30 bg-accent/5 px-4 py-3 text-label uppercase tracking-label text-accent">
+          {t("prefilledNotice", {
+            item: intentPackage ? intentPackage.name[lang] : (intentTreatment?.name[lang] ?? ""),
+          })}
+        </p>
+      ) : null}
+
       {step === 0 ? (
-        <fieldset className="flex flex-col gap-3">
+        <fieldset className="flex flex-col gap-6">
           <legend className="mb-1 text-label uppercase tracking-label text-neutral">
             {t("fieldTreatment")}
           </legend>
@@ -175,17 +220,33 @@ export function BookingFlow() {
             <OptionCard value="" active={watch("treatmentSlug") === ""} {...register("treatmentSlug")}>
               {t("notSure")}
             </OptionCard>
-            {treatments.map((tr) => (
-              <OptionCard
-                key={tr.slug}
-                value={tr.slug}
-                active={watch("treatmentSlug") === tr.slug}
-                {...register("treatmentSlug")}
-              >
-                {tr.name[lang]}
-              </OptionCard>
-            ))}
           </div>
+          {/* Grouped by category instead of one flat 8-option list (post-audit
+              choice-architecture fix) — every treatment stays reachable, but
+              chunked into ~5 small groups instead of one long scan. */}
+          {TREATMENT_CATEGORY_ORDER.map((category) => {
+            const inCategory = treatments.filter((tr) => tr.category === category);
+            if (inCategory.length === 0) return null;
+            return (
+              <div key={category} className="flex flex-col gap-3">
+                <p className="text-label uppercase tracking-label text-accent">
+                  {categoryLabels[category][lang]}
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {inCategory.map((tr) => (
+                    <OptionCard
+                      key={tr.slug}
+                      value={tr.slug}
+                      active={watch("treatmentSlug") === tr.slug}
+                      {...register("treatmentSlug")}
+                    >
+                      {tr.name[lang]}
+                    </OptionCard>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </fieldset>
       ) : null}
 

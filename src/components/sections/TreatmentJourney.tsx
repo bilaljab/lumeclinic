@@ -17,7 +17,7 @@ export async function TreatmentJourney({ lang }: { lang: keyof LocalizedText }) 
   const t = await getTranslations({ locale: lang, namespace: "journey" });
 
   return (
-    <Section id="journey" bleed data-sc-act="pin" data-sc-span="2.5" data-sc-mobile-flow>
+    <Section id="journey" bleed data-sc-act="pin" data-sc-span="2" data-sc-mobile-flow>
       {/*
         Container goes INSIDE the stage, not around it. Section's own
         non-bleed mode wraps children in an auto-height Container *outside*
@@ -39,7 +39,7 @@ export async function TreatmentJourney({ lang }: { lang: keyof LocalizedText }) 
             {t("heading")}
           </h2>
 
-          <ol className="mt-14 flex flex-col gap-10 md:grid md:grid-cols-5 md:gap-6">
+          <ol className="mt-10 flex flex-col gap-10 md:grid md:grid-cols-5 md:gap-6">
             {journeySteps.map((step, i) => (
               <li key={step.number} className="border-t border-border pt-6" data-sc-cue={stepCueWindows[i]}>
                 <span className="font-display text-display-m text-accent">{step.number}</span>

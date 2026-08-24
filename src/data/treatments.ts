@@ -9,8 +9,8 @@ export const treatments: Treatment[] = [
       ar: "ترطيب عميق وإشراقة تنبع من الداخل.",
     },
     description: {
-      en: "A layered hydration protocol combining gentle exfoliation, nutrient infusion, and barrier repair — engineered for the glow that reads in daylight, not just under studio light.",
-      ar: "بروتوكول ترطيب متعدد الطبقات يجمع بين التقشير اللطيف وضخ العناصر الغذائية وإصلاح حاجز البشرة، لإشراقة تظهر في ضوء النهار لا تحت أضواء الاستوديو فقط.",
+      en: "A layered hydration protocol combining gentle exfoliation, nutrient infusion, and barrier repair, engineered for a glow that reads in ordinary daylight as convincingly as it does under studio light.",
+      ar: "بروتوكول ترطيب متعدد الطبقات يجمع بين التقشير اللطيف وضخ العناصر الغذائية وإصلاح حاجز البشرة، لإشراقة تظهر في ضوء النهار بقدر ما تظهر تحت أضواء الاستوديو.",
     },
     category: "skin",
     concerns: ["glow", "hydration"],
@@ -73,12 +73,12 @@ export const treatments: Treatment[] = [
     slug: "contour-sculpt",
     name: { en: "Contour Sculpt", ar: "نحت كونتور" },
     shortDescription: {
-      en: "Non-surgical body contouring for definition, not drastic change.",
-      ar: "نحت جسم غير جراحي لتحديد القوام لا لتغييره الجذري.",
+      en: "Non-surgical body contouring focused on definition and subtle refinement.",
+      ar: "نحت جسم غير جراحي يركّز على تحديد القوام بلمسة دقيقة.",
     },
     description: {
-      en: "A body-contouring series aimed at refining silhouette lines — designed to enhance what's already there, not manufacture a different body.",
-      ar: "سلسلة نحت جسم تهدف لتحسين خطوط القوام، مصممة لإبراز ما هو موجود لا لصنع جسم مختلف.",
+      en: "A body-contouring series aimed at refining silhouette lines, designed to enhance the body you already have rather than reshape it into something else.",
+      ar: "سلسلة نحت جسم تهدف لتحسين خطوط القوام، مصممة لإبراز جسمك كما هو بدلاً من صنع شكل مختلف.",
     },
     category: "body",
     concerns: ["contouring"],

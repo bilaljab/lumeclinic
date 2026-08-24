@@ -1,9 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { EditorialLink } from "@/components/ui/Link";
 import { Section } from "@/components/ui/Section";
 import { ImageWrapper } from "@/components/ui/ImageWrapper";
+import { BookingIntentCta } from "@/components/booking/BookingIntentCta";
 import { buildWhatsAppLink, packageWhatsAppMessage } from "@/lib/whatsapp";
+import { cn } from "@/lib/cn";
 import { packages } from "@/data/packages";
 import { treatments } from "@/data/treatments";
 import type { LocalizedText } from "@/data/types";
@@ -18,7 +20,7 @@ export async function Packages({ lang }: { lang: keyof LocalizedText }) {
       <Eyebrow>{t("eyebrow")}</Eyebrow>
       <h2 className="mt-3 font-display text-display-l">{t("heading")}</h2>
 
-      <div className="mt-14 flex flex-col gap-16">
+      <div className="mt-10 flex flex-col gap-12">
         {packages.map((pkg, i) => {
           const includedTreatments = pkg.treatmentSlugs
             .map((slug) => treatments.find((tr) => tr.slug === slug)?.name[lang])
@@ -32,7 +34,16 @@ export async function Packages({ lang }: { lang: keyof LocalizedText }) {
               data-sc-in
               data-sc-stagger="90"
             >
-              <div className={reversed ? "md:col-span-5 md:col-start-8" : "md:col-span-5"}>
+              <div className={cn("relative", reversed ? "md:col-span-5 md:col-start-8" : "md:col-span-5")}>
+                {/* Layered-plane depth: a rotated backing card behind the
+                    photograph reads as a stacked object, not a flat cutout.
+                    Must extend PAST the photo's own box (positive inset would
+                    sit entirely inside it, fully hidden behind the opaque
+                    image with nothing visible to peek out). */}
+                <div
+                  aria-hidden
+                  className="absolute -inset-3 -z-10 rotate-2 border border-border bg-border/40"
+                />
                 <ImageWrapper
                   src={pkg.image}
                   alt={pkg.name[lang]}
@@ -40,6 +51,7 @@ export async function Packages({ lang }: { lang: keyof LocalizedText }) {
                   sizes="(min-width: 768px) 40vw, 100vw"
                   wrapperClassName="aspect-[16/11]"
                   caption={`0${i + 1}`}
+                  tilt={4}
                 />
               </div>
 
@@ -69,15 +81,21 @@ export async function Packages({ lang }: { lang: keyof LocalizedText }) {
                   </p>
                 ) : null}
 
-                <Button
-                  href={buildWhatsAppLink(lang, packageWhatsAppMessage(pkg.name))}
-                  external
-                  variant="primary"
-                  className="mt-2 self-start"
-                  aria-label={`${cta("discoverPackage")} — ${pkg.name[lang]}`}
-                >
-                  {cta("discoverPackage")}
-                </Button>
+                <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <BookingIntentCta
+                    intent={{ packageSlug: pkg.slug, treatmentSlug: pkg.treatmentSlugs[0] ?? "" }}
+                    variant="primary"
+                    aria-label={`${cta("discoverPackage")} — ${pkg.name[lang]}`}
+                  >
+                    {cta("discoverPackage")}
+                  </BookingIntentCta>
+                  <EditorialLink
+                    href={buildWhatsAppLink(lang, packageWhatsAppMessage(pkg.name))}
+                    external
+                  >
+                    {cta("whatsapp")}
+                  </EditorialLink>
+                </div>
               </div>
             </article>
           );

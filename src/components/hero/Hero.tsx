@@ -23,7 +23,7 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
     <section
       id="hero"
       data-sc-act="flow"
-      className="relative grain flex min-h-[78svh] flex-col justify-between overflow-hidden bg-ground-deep px-page-x-sm py-8 text-canvas sm:min-h-[92svh] md:px-page-x md:py-12"
+      className="relative grain flex min-h-[64svh] flex-col justify-between overflow-hidden bg-ground-deep px-page-x-sm py-8 text-canvas sm:min-h-[78svh] md:px-page-x md:py-12"
     >
       <div className="absolute inset-0" data-sc-parallax="-0.6">
         <Image
@@ -35,7 +35,9 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
           className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-ground-deep/80" />
+      {/* Second plane at a different rate than the photo behind it — two
+          layers drifting apart on scroll is the depth cue, not the tint. */}
+      <div className="absolute inset-0 bg-ground-deep/80" data-sc-parallax="-0.3" />
 
       <p
         className="relative z-10 text-label uppercase tracking-label text-canvas/70"

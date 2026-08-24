@@ -12,7 +12,8 @@
   "cta": {
     "bookConsultation": "Book Consultation",
     "whatsapp": "Chat on WhatsApp",
-    "discoverPackage": "Discover Package",
+    "discoverPackage": "Book This Program",
+    "bookTreatment": "Book This Treatment",
     "exploreTreatments": "Explore Treatments",
     "viewDetails": "Ask on WhatsApp",
     "bookWith": "Book with {name}"
@@ -75,6 +76,8 @@
     "heading": "Book Your Consultation",
     "subheading": "A five-minute form — we'll confirm by phone or WhatsApp.",
     "stepIndicator": "Step {current} of {total}",
+    "prefilledNotice": "Pre-filled from your selection — {item}",
+    "stepPackage": "Package",
     "stepTreatment": "Treatment",
     "stepDoctor": "Doctor",
     "stepDate": "Date",

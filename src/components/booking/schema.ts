@@ -3,6 +3,8 @@ import { z } from "zod";
 export const bookingSchema = z.object({
   treatmentSlug: z.string(),
   doctorSlug: z.string(),
+  /** Carried from a Package CTA elsewhere on the page — display-only, no dedicated step/validation. */
+  packageSlug: z.string(),
   date: z.string().refine((val) => {
     if (!val) return false;
     const chosen = new Date(val);
@@ -21,6 +23,7 @@ export type BookingFormValues = z.infer<typeof bookingSchema>;
 export const bookingDefaults: BookingFormValues = {
   treatmentSlug: "",
   doctorSlug: "",
+  packageSlug: "",
   date: "",
   name: "",
   phone: "",

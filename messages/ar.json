@@ -12,7 +12,8 @@
   "cta": {
     "bookConsultation": "احجزي استشارة",
     "whatsapp": "تواصلي عبر واتساب",
-    "discoverPackage": "اكتشفي الباقة",
+    "discoverPackage": "احجزي هذا البرنامج",
+    "bookTreatment": "احجزي هذا العلاج",
     "exploreTreatments": "استكشفي العلاجات",
     "viewDetails": "اسألي عبر واتساب",
     "bookWith": "احجزي مع {name}"
@@ -75,6 +76,8 @@
     "heading": "احجزي استشارتك",
     "subheading": "نموذج من خمس دقائق، سنؤكد الموعد عبر الهاتف أو واتساب.",
     "stepIndicator": "الخطوة {current} من {total}",
+    "prefilledNotice": "مُعبّأ مسبقاً من اختيارك — {item}",
+    "stepPackage": "الباقة",
     "stepTreatment": "العلاج",
     "stepDoctor": "الطبيب",
     "stepDate": "التاريخ",
@@ -97,8 +100,8 @@
     "summaryHeading": "طلبك",
     "newRequest": "بدء طلب آخر",
     "errorRequired": "مطلوب",
-    "errorPhone": "أدخل رقم هاتف صحيح",
-    "errorEmail": "أدخل بريداً إلكترونياً صحيحاً",
-    "errorDate": "اختر تاريخاً"
+    "errorPhone": "أدخلي رقم هاتف صحيح",
+    "errorEmail": "أدخلي بريداً إلكترونياً صحيحاً",
+    "errorDate": "اختاري تاريخاً"
   }
 }

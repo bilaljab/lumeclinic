@@ -49,15 +49,21 @@
   --font-sans: var(--font-ui);
   --font-display: var(--font-heading);
 
-  --text-display-xl: clamp(3.5rem, 8vw, 8rem);
+  /* Systemic sizing pass (post-audit refinement): the hero keeps real scale —
+     it owns one screenful and nothing competes with it — but display-l/m feed
+     nearly every other heading in the page, so their previous 4.5rem/2.5rem
+     caps were the main reason a section's heading had already scrolled past
+     by the time its content was readable. Caps down, floors barely touched,
+     so mobile is close to unchanged and desktop stops overshooting. */
+  --text-display-xl: clamp(3.25rem, 7vw, 6.5rem);
   --text-display-xl--line-height: var(--leading-display-xl);
   --text-display-xl--letter-spacing: var(--tracking-display);
 
-  --text-display-l: clamp(2.5rem, 5vw, 4.5rem);
+  --text-display-l: clamp(2.25rem, 3.6vw, 3.5rem);
   --text-display-l--line-height: var(--leading-display-l);
   --text-display-l--letter-spacing: var(--tracking-display);
 
-  --text-display-m: clamp(1.75rem, 3vw, 2.5rem);
+  --text-display-m: clamp(1.5rem, 2.2vw, 2.125rem);
   --text-display-m--line-height: var(--leading-display-m);
   --text-display-m--letter-spacing: var(--tracking-display);
 
@@ -94,9 +100,11 @@
   /* contained section max-width -> max-w-contained */
   --container-contained: 1400px;
 
-  /* section rhythm (PRD/creative-direction: ~96-160px desktop, 56-80px mobile) */
-  --spacing-section-y-sm: 3.5rem;
-  --spacing-section-y: 8rem;
+  /* section rhythm — brought down from 128px/56px desktop/mobile (post-audit:
+     sections read as oversized, heading scrolled out before content arrived).
+     Still generous editorial air, no longer a full screenful of padding. */
+  --spacing-section-y-sm: 3rem;
+  --spacing-section-y: 5.5rem;
   --spacing-page-x-sm: 1.25rem;
   --spacing-page-x: 3rem;
 
@@ -216,4 +224,25 @@ html:root {
   left: var(--sc-gutter);
   right: auto;
   text-align: left;
+}
+
+/*
+ * Mobile nav drawer slide direction. Not done with Tailwind's rtl:/ltr:
+ * variants: `translate-x-full`/`-translate-x-full` behind those variants
+ * never compiled in this project's Tailwind v4 build (verified via
+ * devtools — the utility produced no CSS rule at all), so the drawer sat
+ * permanently un-translated instead of off-canvas. Plain [dir] selectors are
+ * the pattern already used above for RTL and are known to work.
+ */
+.mobile-nav-panel {
+  transform: translateX(100%);
+}
+.mobile-nav-panel[data-open="true"] {
+  transform: translateX(0);
+}
+[dir="rtl"] .mobile-nav-panel {
+  transform: translateX(-100%);
+}
+[dir="rtl"] .mobile-nav-panel[data-open="true"] {
+  transform: translateX(0);
 }

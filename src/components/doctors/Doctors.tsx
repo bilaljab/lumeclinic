@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
-import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { EditorialLink } from "@/components/ui/Link";
 import { Section } from "@/components/ui/Section";
 import { ImageWrapper } from "@/components/ui/ImageWrapper";
+import { BookingIntentCta } from "@/components/booking/BookingIntentCta";
 import { buildWhatsAppLink, doctorWhatsAppMessage } from "@/lib/whatsapp";
 import { doctors } from "@/data/doctors";
 import { languageLabels } from "@/data/concerns";
@@ -18,7 +19,7 @@ export async function Doctors({ lang }: { lang: keyof LocalizedText }) {
       <Eyebrow>{t("eyebrow")}</Eyebrow>
       <h2 className="mt-3 font-display text-display-l">{t("heading")}</h2>
 
-      <div className="mt-14 flex flex-col gap-20">
+      <div className="mt-10 flex flex-col gap-14">
         {doctors.map((doctor, i) => {
           const reversed = i % 2 === 1;
           return (
@@ -35,6 +36,7 @@ export async function Doctors({ lang }: { lang: keyof LocalizedText }) {
                   fill
                   sizes="(min-width: 768px) 40vw, 100vw"
                   wrapperClassName="aspect-[4/5]"
+                  tilt={5}
                 />
               </div>
 
@@ -63,14 +65,17 @@ export async function Doctors({ lang }: { lang: keyof LocalizedText }) {
                   </div>
                 </dl>
 
-                <Button
-                  href={buildWhatsAppLink(lang, doctorWhatsAppMessage(doctor.name))}
-                  external
-                  variant="secondary"
-                  className="mt-2 self-start"
-                >
-                  {cta("bookWith", { name: doctor.name[lang] })}
-                </Button>
+                <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <BookingIntentCta intent={{ doctorSlug: doctor.slug }} variant="primary">
+                    {cta("bookWith", { name: doctor.name[lang] })}
+                  </BookingIntentCta>
+                  <EditorialLink
+                    href={buildWhatsAppLink(lang, doctorWhatsAppMessage(doctor.name))}
+                    external
+                  >
+                    {cta("whatsapp")}
+                  </EditorialLink>
+                </div>
               </div>
             </article>
           );

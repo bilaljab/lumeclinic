@@ -36,8 +36,8 @@ export const journeySteps: JourneyStep[] = [
     number: "04",
     title: { en: "Aftercare", ar: "العناية اللاحقة" },
     description: {
-      en: "A home-care plan and check-ins that protect the result, not just the appointment.",
-      ar: "خطة عناية منزلية ومتابعات تحافظ على النتيجة لا على الموعد فقط.",
+      en: "A home-care plan and follow-up check-ins that carry the result well past the appointment itself.",
+      ar: "خطة عناية منزلية ومتابعات تحمل النتيجة إلى ما بعد الموعد نفسه.",
     },
   },
   {

@@ -6,13 +6,15 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ImageWrapper } from "@/components/ui/ImageWrapper";
 import { EditorialLink } from "@/components/ui/Link";
+import { BookingIntentCta } from "@/components/booking/BookingIntentCta";
 import { cn } from "@/lib/cn";
 import { buildWhatsAppLink, treatmentWhatsAppMessage } from "@/lib/whatsapp";
-import { concernLabels, concernOrder } from "@/data/concerns";
+import { concernGroupLabels, concernGroupOrder, concernGroups } from "@/data/concerns";
 import { treatments } from "@/data/treatments";
-import type { Concern, LocalizedText } from "@/data/types";
+import type { ConcernGroup } from "@/data/concerns";
+import type { LocalizedText } from "@/data/types";
 
-type Filter = Concern | "all";
+type Filter = ConcernGroup | "all";
 
 /** PRD §6.4 — browse by concern, not medical terminology. Local filter state, no backend. */
 export function TreatmentExplorer() {
@@ -23,7 +25,10 @@ export function TreatmentExplorer() {
   const [filter, setFilter] = useState<Filter>("all");
 
   const filtered = useMemo(
-    () => (filter === "all" ? treatments : treatments.filter((tr) => tr.concerns.includes(filter))),
+    () =>
+      filter === "all"
+        ? treatments
+        : treatments.filter((tr) => tr.concerns.some((c) => concernGroups[filter].includes(c))),
     [filter],
   );
 
@@ -48,20 +53,20 @@ export function TreatmentExplorer() {
         >
           {t("allLabel")}
         </button>
-        {concernOrder.map((concern) => (
+        {concernGroupOrder.map((group) => (
           <button
-            key={concern}
+            key={group}
             type="button"
-            onClick={() => setFilter(concern)}
-            aria-pressed={filter === concern}
+            onClick={() => setFilter(group)}
+            aria-pressed={filter === group}
             className={cn(
               "rounded-sm border px-4 py-2 text-label uppercase tracking-label transition-colors duration-200 ease-out focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
-              filter === concern
+              filter === group
                 ? "border-accent bg-accent text-canvas"
                 : "border-border text-ink hover:border-accent hover:text-accent",
             )}
           >
-            {concernLabels[concern][lang]}
+            {concernGroupLabels[group][lang]}
           </button>
         ))}
       </div>
@@ -84,6 +89,7 @@ export function TreatmentExplorer() {
                 wrapperClassName="aspect-[4/5]"
                 className="transition-transform duration-500 ease-editorial hover:scale-[1.03]"
                 caption={common("minutesLabel", { count: treatment.durationMinutes })}
+                tilt={6}
               />
               <div>
                 <h3 className="font-display text-display-m">{treatment.name[lang]}</h3>
@@ -92,14 +98,22 @@ export function TreatmentExplorer() {
                   {treatment.recovery[lang]}
                 </p>
               </div>
-              <EditorialLink
-                href={buildWhatsAppLink(lang, treatmentWhatsAppMessage(treatment.name))}
-                external
-                className="mt-auto self-start"
-                aria-label={`${cta("viewDetails")} — ${treatment.name[lang]}`}
-              >
-                {cta("viewDetails")}
-              </EditorialLink>
+              <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2">
+                <BookingIntentCta
+                  intent={{ treatmentSlug: treatment.slug }}
+                  variant="primary"
+                  className="px-4 py-2"
+                >
+                  {cta("bookTreatment")}
+                </BookingIntentCta>
+                <EditorialLink
+                  href={buildWhatsAppLink(lang, treatmentWhatsAppMessage(treatment.name))}
+                  external
+                  aria-label={`${cta("viewDetails")} — ${treatment.name[lang]}`}
+                >
+                  {cta("viewDetails")}
+                </EditorialLink>
+              </div>
             </article>
           ))}
         </div>
