@@ -10,14 +10,12 @@
     "generate:images": "node scripts/generate-images.mjs"
   },
   "dependencies": {
-    "@react-three/fiber": "^9.7.0",
     "lucide-react": "^1.33.0",
     "next": "16.3.2",
     "next-intl": "^4.13.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.86.0",
-    "three": "^0.185.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -25,7 +23,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.185.4",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
     "tailwindcss": "^4",

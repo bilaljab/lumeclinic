@@ -7,9 +7,8 @@ import { cn } from "@/lib/cn";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])';
 
-// Same useSyncExternalStore-over-useEffect+setState pattern as
-// BrandSceneGate — a hydration-safe "false" on the server/first paint
-// without a setState-in-effect render cascade.
+// useSyncExternalStore-over-useEffect+setState: a hydration-safe "false" on
+// the server/first paint without a setState-in-effect render cascade.
 function subscribe() {
   return () => {};
 }

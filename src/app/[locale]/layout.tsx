@@ -11,6 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyMobileCta } from "@/components/layout/StickyMobileCta";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { ScrollCraftMount } from "@/components/motion/ScrollCraftMount";
+import type { LocalizedText } from "@/data/types";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -41,6 +42,7 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
 
+  const lang = locale as keyof LocalizedText;
   const t = await getTranslations({ locale, namespace: "a11y" });
   const dir = locale === "ar" ? "rtl" : "ltr";
 
@@ -53,7 +55,7 @@ export default async function LocaleLayout({
           <Navbar />
           <main id="main-content">{children}</main>
           <Footer />
-          <StickyMobileCta />
+          <StickyMobileCta lang={lang} />
         </NextIntlClientProvider>
       </body>
     </html>

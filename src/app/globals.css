@@ -116,7 +116,6 @@
    read directly by transition-duration/GSAP in Phase 04, not by a class name */
 :root {
   --duration-micro: 200ms;
-  --duration-reveal: 800ms;
 }
 
 /* @layer base so unlayered specificity doesn't beat Tailwind's own layered

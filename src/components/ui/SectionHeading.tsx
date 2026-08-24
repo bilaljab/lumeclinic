@@ -15,12 +15,7 @@ type Props = {
   eyebrow?: ReactNode;
   size?: Size;
   align?: "start" | "center" | "end";
-  /**
-   * A finite tag union, not `ElementType` — a fully generic polymorphic `as`
-   * collides with @react-three/fiber's global JSX.IntrinsicElements
-   * augmentation (its huge tag union collapses the inferred `children` prop
-   * type to `never`). Only heading levels are ever needed here.
-   */
+  /** A finite tag union, not `ElementType` — only heading levels are ever needed here. */
   as?: "h1" | "h2" | "h3" | "h4";
   className?: string;
 };

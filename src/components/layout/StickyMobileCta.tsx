@@ -1,17 +1,15 @@
-"use client";
-
-import { useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/Button";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
+import type { LocalizedText } from "@/data/types";
 
 /** Mobile-only persistent booking CTA — conversion.md requires the CTA stay reachable everywhere. */
-export function StickyMobileCta() {
-  const t = useTranslations("cta");
-  const locale = useLocale() as "en" | "ar";
+export async function StickyMobileCta({ lang }: { lang: keyof LocalizedText }) {
+  const t = await getTranslations({ locale: lang, namespace: "cta" });
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 flex gap-2 border-t border-border bg-canvas p-3 md:hidden">
-      <Button href={buildWhatsAppLink(locale)} external variant="whatsapp" className="flex-1 px-2! whitespace-nowrap">
+      <Button href={buildWhatsAppLink(lang)} external variant="whatsapp" className="flex-1 px-2! whitespace-nowrap">
         {t("whatsapp")}
       </Button>
       <Button href="/#booking-form" variant="primary" className="flex-1 px-2! whitespace-nowrap">
