@@ -2,8 +2,11 @@ import type { ComponentProps, ReactNode } from "react";
 import { Link as IntlLink } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 
+/** Text link, so no scale (apple-design skill: scaling inline text reflows
+ * neighboring words and reads as broken, not premium) — the press feedback
+ * is a colour step further than hover instead, on its own faster transition. */
 const base =
-  "underline underline-offset-4 decoration-border decoration-1 transition-colors duration-200 ease-out hover:decoration-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
+  "underline underline-offset-4 decoration-border decoration-1 transition-colors duration-200 ease-editorial hover:decoration-accent hover:text-accent active:text-accent-hover active:duration-100 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
 
 type Props = {
   href: string;

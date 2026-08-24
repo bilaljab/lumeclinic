@@ -37,10 +37,10 @@ const ENDPOINT = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.2-kl
 
 const assets = [
   {
-    out: "public/images/hero/hero-main.jpg",
+    out: "public/images/hero/hero-main-v2.jpg",
     ratio: "2:1",
     prompt:
-      "Editorial still-life and portrait photography on a seamless bone-white cyclorama background. Large soft overhead light source, huge white bounce fill, near-shadowless with one soft contact shadow. High key, gentle contrast, warm white and pale neutral colour grade. Medium-format sharpness, fine film grain. Photographic realism, shot on a medium-format camera. A macro close-up of a single clear water droplet resting on bare skin, catching soft light, a faint warm-wine (deep burgundy) accent reflected in the droplet's highlight. Extreme shallow depth of field, skin texture rendered with quiet realism, not airbrushed. Shot at 100mm macro, f/2.8.",
+      "Editorial beauty photograph of a woman's bare shoulder, neck, and jawline in soft profile, eyes closed, calm serene expression, head tilted slightly back, face and hair filling the upper half of the frame. Warm directional studio light grazing clean healthy skin, catching a subtle natural glow. A strip of deep burgundy silk fabric draped loosely at the shoulder for a single accent of colour. Seamless bone-white background, soft falloff into shadow at the frame edges. Medium-format sharpness, fine film grain, high-key with gentle contrast. Photographic realism, shot on a medium-format camera at 90mm, f/2.8, shallow depth of field.",
   },
   {
     out: "public/images/brand/science.jpg",

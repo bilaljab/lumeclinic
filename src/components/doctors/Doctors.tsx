@@ -35,7 +35,7 @@ export async function Doctors({ lang }: { lang: keyof LocalizedText }) {
                   alt={doctor.name[lang]}
                   fill
                   sizes="(min-width: 768px) 40vw, 100vw"
-                  wrapperClassName="aspect-[4/5]"
+                  wrapperClassName="aspect-square"
                   tilt={5}
                 />
               </div>

@@ -46,7 +46,7 @@ export async function FeaturedTreatments({ lang }: { lang: keyof LocalizedText }
                 alt={treatment.name[lang]}
                 fill
                 sizes="420px"
-                wrapperClassName="aspect-[4/5]"
+                wrapperClassName="aspect-[3/2]"
                 caption={`0${i + 1} / 0${featured.length}`}
                 tilt={7}
               />

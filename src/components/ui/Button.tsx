@@ -4,8 +4,17 @@ import { cn } from "@/lib/cn";
 
 type Variant = "primary" | "secondary" | "whatsapp" | "outline-light";
 
+/**
+ * Hover/press feedback (apple-design skill): scale is the only motion added —
+ * transform is compositor-friendly and reads as premium restraint rather than
+ * a shadow/glow effect. Press (active) must read as an instant response, not
+ * a slow ease, so it gets its own faster transition-duration than the hover
+ * scale/color change. `prefers-reduced-motion` is handled globally
+ * (globals.css zeroes all transition-durations under that query), so no
+ * extra guard is needed here.
+ */
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-label uppercase transition-colors duration-200 ease-out focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-label uppercase scale-100 transition-[color,background-color,border-color,transform] duration-200 ease-editorial hover:scale-[1.02] active:scale-[0.97] active:duration-100 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
 
 const variants: Record<Variant, string> = {
   primary: "bg-accent text-canvas hover:bg-accent-hover",

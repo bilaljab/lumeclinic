@@ -45,7 +45,7 @@ export function TreatmentExplorer() {
           onClick={() => setFilter("all")}
           aria-pressed={filter === "all"}
           className={cn(
-            "rounded-sm border px-4 py-2 text-label uppercase tracking-label transition-colors duration-200 ease-out focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
+            "scale-100 rounded-sm border px-4 py-2 text-label uppercase tracking-label transition-[color,background-color,border-color,transform] duration-200 ease-editorial hover:scale-[1.02] active:scale-[0.97] active:duration-100 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
             filter === "all"
               ? "border-accent bg-accent text-canvas"
               : "border-border text-ink hover:border-accent hover:text-accent",
@@ -60,7 +60,7 @@ export function TreatmentExplorer() {
             onClick={() => setFilter(group)}
             aria-pressed={filter === group}
             className={cn(
-              "rounded-sm border px-4 py-2 text-label uppercase tracking-label transition-colors duration-200 ease-out focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
+              "scale-100 rounded-sm border px-4 py-2 text-label uppercase tracking-label transition-[color,background-color,border-color,transform] duration-200 ease-editorial hover:scale-[1.02] active:scale-[0.97] active:duration-100 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
               filter === group
                 ? "border-accent bg-accent text-canvas"
                 : "border-border text-ink hover:border-accent hover:text-accent",
@@ -86,7 +86,7 @@ export function TreatmentExplorer() {
                 alt={treatment.name[lang]}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                wrapperClassName="aspect-[4/5]"
+                wrapperClassName="aspect-[3/2]"
                 className="transition-transform duration-500 ease-editorial hover:scale-[1.03]"
                 caption={common("minutesLabel", { count: treatment.durationMinutes })}
                 tilt={6}

@@ -1,6 +1,5 @@
 import { Container } from "@/components/ui/Container";
 import { ImageWrapper } from "@/components/ui/ImageWrapper";
-import { BrandSceneGate } from "./BrandSceneGate";
 import { brandStatementBeats } from "@/data/brandStatement";
 import type { LocalizedText } from "@/data/types";
 
@@ -14,9 +13,9 @@ import type { LocalizedText } from "@/data/types";
  * content is a plain fade-in shows an empty stage for its whole ramp-in
  * (devices.md "Ground or greet"); this section has no image/colour ground
  * to fall back on otherwise. "Science" gets the act's one kinetic headline
- * (devices.md: at most one per act) — the beat that also carries the 3D
- * moment. "Results" closes with a plain fade+rise, `to=1` so it can never
- * get stuck lit through the un-pin slide (devices.md cue contract).
+ * (devices.md: at most one per act). "Results" closes with a plain
+ * fade+rise, `to=1` so it can never get stuck lit through the un-pin slide
+ * (devices.md cue contract).
  */
 const cueWindows: Record<string, string> = {
   skin: "0 1 0 0",
@@ -44,16 +43,13 @@ export function BrandStatement({ lang }: { lang: keyof LocalizedText }) {
                 style={i === 1 ? { marginTop: "clamp(0px, 4vw, 3rem)" } : undefined}
               >
                 {beat.slug === "science" ? (
-                  <div className="relative md:order-first">
-                    <ImageWrapper
-                      src="/images/brand/science.jpg"
-                      alt=""
-                      fill
-                      sizes="(min-width: 768px) 33vw, 100vw"
-                      wrapperClassName="aspect-[3/2]"
-                    />
-                    <BrandSceneGate sectionId="brand-statement" />
-                  </div>
+                  <ImageWrapper
+                    src="/images/brand/science.jpg"
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    wrapperClassName="aspect-[3/2] md:order-first"
+                  />
                 ) : null}
                 <p className="text-label uppercase tracking-label text-accent">{beat.label[lang]}</p>
                 {beat.slug === "science" ? (

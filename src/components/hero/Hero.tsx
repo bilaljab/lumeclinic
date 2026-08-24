@@ -27,17 +27,23 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
     >
       <div className="absolute inset-0" data-sc-parallax="-0.6">
         <Image
-          src="/images/hero/hero-main.jpg"
+          src="/images/hero/hero-main-v2.jpg"
           alt=""
           fill
           priority
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: "50% 17%" }}
         />
       </div>
-      {/* Second plane at a different rate than the photo behind it — two
-          layers drifting apart on scroll is the depth cue, not the tint. */}
-      <div className="absolute inset-0 bg-ground-deep/80" data-sc-parallax="-0.3" />
+      {/* A flat 80%-opacity tint here previously crushed the photo underneath to
+          near-solid dark gray — a scrim only where the text actually sits
+          (bottom, where the headline/CTAs live) instead, so the photograph
+          reads as an intentional premium image rather than disappearing. */}
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-ground-deep/85 via-ground-deep/30 to-ground-deep/5"
+        data-sc-parallax="-0.3"
+      />
 
       <p
         className="relative z-10 text-label uppercase tracking-label text-canvas/70"
