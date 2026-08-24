@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "treatments": "العلاجات",
+    "doctors": "الأطباء",
+    "results": "النتائج",
+    "packages": "الباقات",
+    "bookConsultation": "احجز استشارة",
+    "menu": "القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "switchLanguage": "English"
+  },
+  "cta": {
+    "bookConsultation": "احجز استشارة",
+    "whatsapp": "تواصل عبر واتساب",
+    "discoverPackage": "اكتشف الباقة",
+    "exploreTreatments": "استكشف العلاجات",
+    "viewDetails": "اسأل عبر واتساب",
+    "bookWith": "احجز مع {name}"
+  },
+  "common": {
+    "minutesLabel": "{count} دقيقة"
+  },
+  "a11y": {
+    "skipToContent": "تخطَّ إلى المحتوى",
+    "dragHandle": "اسحب للمقارنة بين قبل وبعد",
+    "beforeLabel": "قبل",
+    "afterLabel": "بعد"
+  },
+  "explorer": {
+    "heading": "استكشف حسب الاهتمام",
+    "subheading": "أخبرنا بما تريد العمل عليه، وسنعرض لك العلاجات المناسبة.",
+    "allLabel": "الكل",
+    "countLabel": "{count} علاجات",
+    "emptyLabel": "لا توجد علاجات مطابقة بعد، جرّب اهتماماً آخر."
+  },
+  "featured": {
+    "eyebrow": "مختارات",
+    "heading": "العلاجات المميزة"
+  },
+  "results": {
+    "heading": "نتائج تُعرض بصدق",
+    "subheading": "رحلات علاجية حقيقية بمدد زمنية حقيقية، اسحب للمقارنة.",
+    "dragHint": "اسحب للمقارنة",
+    "sessionsLabel": "الجلسات",
+    "timeframeLabel": "المدة",
+    "treatmentLabel": "العلاج",
+    "doctorLabel": "الطبيب",
+    "peakHeading": "شاهدي التغيّر"
+  },
+  "doctors": {
+    "eyebrow": "الأطباء",
+    "heading": "مدربون على الإصغاء أولاً",
+    "experienceLabel": "{years} سنة خبرة",
+    "languagesLabel": "اللغات",
+    "expertiseLabel": "مجالات التركيز"
+  },
+  "journey": {
+    "heading": "رحلة العلاج"
+  },
+  "packages": {
+    "eyebrow": "البرامج",
+    "heading": "برامج العلاج",
+    "includesLabel": "يشمل"
+  },
+  "trust": {
+    "heading": "بكلماتهم"
+  },
+  "footer": {
+    "navHeading": "استكشف",
+    "contactHeading": "تواصل",
+    "followHeading": "تابعنا",
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "booking": {
+    "heading": "احجزي استشارتك",
+    "subheading": "نموذج من خمس دقائق، سنؤكد الموعد عبر الهاتف أو واتساب.",
+    "stepIndicator": "الخطوة {current} من {total}",
+    "stepTreatment": "العلاج",
+    "stepDoctor": "الطبيب",
+    "stepDate": "التاريخ",
+    "stepDetails": "بياناتك",
+    "stepConfirm": "التأكيد",
+    "fieldTreatment": "ما العلاج الذي يهمك؟",
+    "notSure": "لست متأكدة بعد — استشارة عامة",
+    "fieldDoctor": "الطبيب المفضل",
+    "noPreference": "لا تفضيل",
+    "fieldDate": "التاريخ المفضل",
+    "fieldName": "الاسم الكامل",
+    "fieldPhone": "رقم الهاتف",
+    "fieldEmail": "البريد الإلكتروني (اختياري)",
+    "fieldNotes": "هل هناك ما تودين إخبارنا به؟ (اختياري)",
+    "back": "رجوع",
+    "next": "متابعة",
+    "submit": "أرسل طلب الاستشارة",
+    "confirmTitle": "تم استلام طلبك.",
+    "confirmBody": "سنؤكد استشارتك عبر الهاتف أو واتساب خلال يوم عمل واحد. هذا نموذج حجز تجريبي، ولم يُحجز أي موعد فعلي.",
+    "summaryHeading": "طلبك",
+    "newRequest": "بدء طلب آخر",
+    "errorRequired": "مطلوب",
+    "errorPhone": "أدخل رقم هاتف صحيح",
+    "errorEmail": "أدخل بريداً إلكترونياً صحيحاً",
+    "errorDate": "اختر تاريخاً"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "treatments": "Treatments",
+    "doctors": "Doctors",
+    "results": "Results",
+    "packages": "Packages",
+    "bookConsultation": "Book Consultation",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "switchLanguage": "العربية"
+  },
+  "cta": {
+    "bookConsultation": "Book Consultation",
+    "whatsapp": "Chat on WhatsApp",
+    "discoverPackage": "Discover Package",
+    "exploreTreatments": "Explore Treatments",
+    "viewDetails": "Ask on WhatsApp",
+    "bookWith": "Book with {name}"
+  },
+  "common": {
+    "minutesLabel": "{count} min"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "dragHandle": "Drag to compare before and after",
+    "beforeLabel": "Before",
+    "afterLabel": "After"
+  },
+  "explorer": {
+    "heading": "Explore by Concern",
+    "subheading": "Tell us what you want to work on — we'll surface the right treatments.",
+    "allLabel": "All",
+    "countLabel": "{count} treatments",
+    "emptyLabel": "No treatments match yet — try another concern."
+  },
+  "featured": {
+    "eyebrow": "Featured",
+    "heading": "Signature Treatments"
+  },
+  "results": {
+    "heading": "Results, Shown Honestly",
+    "subheading": "Real treatment arcs, real timeframes — drag to compare.",
+    "dragHint": "Drag to compare",
+    "sessionsLabel": "Sessions",
+    "timeframeLabel": "Timeframe",
+    "treatmentLabel": "Treatment",
+    "doctorLabel": "Doctor",
+    "peakHeading": "See It Change"
+  },
+  "doctors": {
+    "eyebrow": "Doctors",
+    "heading": "Trained to Listen First",
+    "experienceLabel": "{years} Years Experience",
+    "languagesLabel": "Languages",
+    "expertiseLabel": "Focus Areas"
+  },
+  "journey": {
+    "heading": "The Treatment Journey"
+  },
+  "packages": {
+    "eyebrow": "Programs",
+    "heading": "Treatment Programs",
+    "includesLabel": "Includes"
+  },
+  "trust": {
+    "heading": "In Their Words"
+  },
+  "footer": {
+    "navHeading": "Explore",
+    "contactHeading": "Contact",
+    "followHeading": "Follow",
+    "rights": "All rights reserved."
+  },
+  "booking": {
+    "heading": "Book Your Consultation",
+    "subheading": "A five-minute form — we'll confirm by phone or WhatsApp.",
+    "stepIndicator": "Step {current} of {total}",
+    "stepTreatment": "Treatment",
+    "stepDoctor": "Doctor",
+    "stepDate": "Date",
+    "stepDetails": "Your Details",
+    "stepConfirm": "Confirm",
+    "fieldTreatment": "Which treatment interests you?",
+    "notSure": "Not sure yet — general consultation",
+    "fieldDoctor": "Preferred doctor",
+    "noPreference": "No preference",
+    "fieldDate": "Preferred date",
+    "fieldName": "Full name",
+    "fieldPhone": "Phone number",
+    "fieldEmail": "Email (optional)",
+    "fieldNotes": "Anything we should know? (optional)",
+    "back": "Back",
+    "next": "Continue",
+    "submit": "Request Consultation",
+    "confirmTitle": "Request received.",
+    "confirmBody": "We'll confirm your consultation by phone or WhatsApp within one business day. This is a demo booking flow — no appointment has actually been scheduled.",
+    "summaryHeading": "Your request",
+    "newRequest": "Start Another Request",
+    "errorRequired": "Required",
+    "errorPhone": "Enter a valid phone number",
+    "errorEmail": "Enter a valid email",
+    "errorDate": "Choose a date"
+  }
+}

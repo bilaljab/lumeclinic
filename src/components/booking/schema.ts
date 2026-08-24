@@ -1,0 +1,37 @@
+import { z } from "zod";
+
+export const bookingSchema = z.object({
+  treatmentSlug: z.string(),
+  doctorSlug: z.string(),
+  date: z.string().refine((val) => {
+    if (!val) return false;
+    const chosen = new Date(val);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return chosen >= today;
+  }),
+  name: z.string().trim().min(2),
+  phone: z.string().trim().min(8),
+  email: z.union([z.literal(""), z.string().trim().email()]),
+  notes: z.string(),
+});
+
+export type BookingFormValues = z.infer<typeof bookingSchema>;
+
+export const bookingDefaults: BookingFormValues = {
+  treatmentSlug: "",
+  doctorSlug: "",
+  date: "",
+  name: "",
+  phone: "",
+  email: "",
+  notes: "",
+};
+
+/** Fields validated before each step advances. */
+export const stepFields: (keyof BookingFormValues)[][] = [
+  ["treatmentSlug"],
+  ["doctorSlug"],
+  ["date"],
+  ["name", "phone", "email"],
+];
