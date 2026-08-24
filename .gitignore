@@ -40,6 +40,9 @@ yarn-error.log*
 .impeccable/
 .claude/scheduled_tasks.lock
 
+# git worktrees
+/.worktrees/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
