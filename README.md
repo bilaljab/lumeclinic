@@ -1,15 +1,20 @@
 # LUMÉ
 
-A premium aesthetic-clinic landing page — fictional brand, Riyadh market reference, EN/AR bilingual. Built as a portfolio piece and as a reusable template: swap brand config, content, and images to stand up a different clinic without rebuilding components.
+A premium aesthetic-clinic website concept — fictional brand, imagined for the Riyadh market, in both English and Arabic.
+
+## What this is
+
+LUMÉ isn't a real clinic. It's a portfolio piece: a complete, polished website design for a high-end aesthetic clinic, built to show what that kind of site can look and feel like when it's done at a premium, editorial level instead of a generic template. It includes a treatment browser, doctor profiles, a before/after results gallery, patient testimonials, and a full booking flow that ends in a confirmation screen (no real appointments are ever booked — there's no backend behind it).
+
+The whole site is bilingual, with Arabic built as its own proper layout — right-to-left, its own typography and spacing — rather than a mirror-flipped translation of the English version.
+
+It also doubles as a reusable template: the design, content, and code are kept separate on purpose, so a real clinic (or agency) could reskin this into their own brand by swapping the text, colors, and images, without touching the underlying components.
 
 Full product spec: [LUME_PRD.md](LUME_PRD.md). Full tech spec: [LUME_TECH_STACK.md](LUME_TECH_STACK.md). Build history and decisions: [.claude/project-state.md](.claude/project-state.md).
 
-## Goals
+---
 
-- Demonstrate high-end frontend/motion craft (portfolio piece).
-- Convert visitors toward a "Book Consultation" action.
-- Bilingual EN/AR, with Arabic treated as a first-class layout, not a mirrored translation.
-- Rebuildable for a different clinic by swapping content/theme/images, not components.
+## For developers
 
 ## Stack
 
