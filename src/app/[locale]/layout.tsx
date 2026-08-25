@@ -47,7 +47,7 @@ export default async function LocaleLayout({
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} className={fontVariables}>
+    <html lang={locale} dir={dir} className={fontVariables} suppressHydrationWarning>
       <body className="min-h-screen pb-20 antialiased md:pb-0">
         <NextIntlClientProvider>
           <ScrollCraftMount />

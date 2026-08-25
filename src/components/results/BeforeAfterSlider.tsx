@@ -33,7 +33,7 @@ export function BeforeAfterSlider({
   const afterClip = isRtl ? `inset(0 0 0 ${100 - value}%)` : `inset(0 ${100 - value}% 0 0)`;
 
   return (
-    <div className="relative aspect-[4/5] overflow-hidden rounded-xs border border-border focus-within:outline-2 focus-within:outline-accent focus-within:outline-offset-2">
+    <div className="relative aspect-[3/2] overflow-hidden rounded-xs border border-border focus-within:outline-2 focus-within:outline-accent focus-within:outline-offset-2 md:aspect-[4/5]">
       <Image src={beforeSrc} alt={alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
       <div className="absolute inset-0" style={{ clipPath: afterClip }}>
         <Image src={afterSrc} alt={alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />

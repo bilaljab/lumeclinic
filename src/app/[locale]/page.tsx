@@ -1,7 +1,6 @@
 import { Hero } from "@/components/hero/Hero";
 import { BrandStatement } from "@/components/sections/BrandStatement";
 import { TreatmentExplorer } from "@/components/treatments/TreatmentExplorer";
-import { FeaturedTreatments } from "@/components/treatments/FeaturedTreatments";
 import { BeforeAfterPeak } from "@/components/results/BeforeAfterPeak";
 import { BeforeAfter } from "@/components/results/BeforeAfter";
 import { Doctors } from "@/components/doctors/Doctors";
@@ -26,7 +25,6 @@ export default async function HomePage({
       <Hero lang={lang} />
       <BrandStatement lang={lang} />
       <TreatmentExplorer />
-      <FeaturedTreatments lang={lang} />
       <BeforeAfterPeak lang={lang} />
       <BeforeAfter lang={lang} />
       <Doctors lang={lang} />

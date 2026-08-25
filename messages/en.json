@@ -34,10 +34,6 @@
     "countLabel": "{count} treatments",
     "emptyLabel": "No treatments match yet — try another concern."
   },
-  "featured": {
-    "eyebrow": "Featured",
-    "heading": "Signature Treatments"
-  },
   "results": {
     "heading": "Results, Shown Honestly",
     "subheading": "Real treatment arcs, real timeframes — drag to compare.",
