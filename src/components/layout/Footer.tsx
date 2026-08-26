@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { EditorialLink } from "@/components/ui/Link";
 import { siteConfig } from "@/config/site";
@@ -20,12 +22,42 @@ const anchors = [
 export function Footer() {
   const nav = useTranslations("nav");
   const footer = useTranslations("footer");
+  const cta = useTranslations("cta");
   const locale = useLocale() as keyof LocalizedText;
   const pathname = usePathname();
   const otherLocale = routing.locales.find((l) => l !== locale) ?? routing.defaultLocale;
 
   return (
     <footer className="border-t border-border bg-canvas">
+      {/* Cinematic closing beat: one contained visual moment fading into the
+          footer's own canvas background, not a full-screen block — the
+          page's last piece of imagery before it resolves into plain text. */}
+      <div className="relative h-[34vh] w-full overflow-hidden md:h-[44vh]" data-sc-parallax="-0.25">
+        <Image
+          src="/images/brand/science.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-ground-deep/25 via-ground-deep/10 to-canvas" />
+      </div>
+
+      <Container
+        className="flex flex-wrap items-center justify-between gap-6 border-b border-border py-8"
+        data-sc-in
+      >
+        <p className="font-display text-display-m">{siteConfig.finalCta.headline[locale]}</p>
+        <div className="flex flex-wrap gap-4">
+          <Button href="/#booking-form" variant="primary">
+            {cta("bookConsultation")}
+          </Button>
+          <Button href={buildWhatsAppLink(locale)} external variant="secondary">
+            {cta("whatsapp")}
+          </Button>
+        </div>
+      </Container>
+
       <Container className="grid gap-12 py-16 md:grid-cols-4" data-sc-in data-sc-stagger="60">
         <div className="flex flex-col gap-3 md:col-span-1">
           <p className="font-display text-display-m">{siteConfig.brandName}</p>
@@ -44,7 +76,14 @@ export function Footer() {
         <div className="flex flex-col gap-3">
           <p className="text-label uppercase tracking-label text-neutral">{footer("contactHeading")}</p>
           <p className="text-body text-ink/80">{siteConfig.location.addressLine[locale]}</p>
-          <EditorialLink href={siteConfig.contact.phoneHref}>{siteConfig.contact.phoneDisplay}</EditorialLink>
+          <EditorialLink href={siteConfig.contact.phoneHref}>
+            {/* Arabic bidi: an unisolated Latin/numeral run inside RTL text
+                gets its space-separated groups reordered by the bidi
+                algorithm ("+966 50 123 4567" → "4567 123 50 966+"). */}
+            <span dir="ltr" className="inline-block">
+              {siteConfig.contact.phoneDisplay}
+            </span>
+          </EditorialLink>
           <EditorialLink href={buildWhatsAppLink(locale)} external>
             WhatsApp
           </EditorialLink>
