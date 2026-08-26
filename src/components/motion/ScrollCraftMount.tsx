@@ -10,6 +10,7 @@ declare global {
       reduce: boolean;
       instances: unknown[];
     };
+    __scrollCraftMounted?: boolean;
   }
 }
 
@@ -136,6 +137,14 @@ export function ScrollCraftMount() {
         mounted.current = true;
         adaptMobilePins();
         window.ScrollCraft.mount(document.body);
+        // ScrollCraft's own pinned sections (Brand Statement, Before/After
+        // peak, Treatment Journey) insert their pin-spacing here, shifting
+        // everything below by thousands of px. Anything else on the page
+        // that measured its own scroll-trigger positions before this line
+        // ran (e.g. GSAP ScrollTrigger in SpatialStackScroll) is now stale
+        // — this flag/event lets that code know when it's safe to refresh.
+        window.__scrollCraftMounted = true;
+        window.dispatchEvent(new Event("scrollcraft:mounted"));
       }}
     />
   );

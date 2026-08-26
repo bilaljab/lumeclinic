@@ -80,7 +80,25 @@ export function SpatialStackScroll({
         onUpdate: (self) => applyFrame(self.progress * n),
       });
 
+      // This pin is created the moment `stacked` flips true, which can
+      // land before ScrollCraft's own pinned sections above it (Brand
+      // Statement, Before/After peak, Treatment Journey) have finished
+      // inserting their pin-spacing — that insertion shifts this section
+      // down by thousands of px. GSAP measures trigger position once at
+      // creation and never re-measures on its own, so this pin's start/end
+      // freeze against the pre-ScrollCraft-mount layout: it then renders
+      // blank in its real slot and appears wherever that stale offset
+      // lands instead. `ScrollCraftMount` dispatches `scrollcraft:mounted`
+      // right after its own mount() call for exactly this reason.
+      const refresh = () => ScrollTrigger.refresh();
+      if (window.__scrollCraftMounted) {
+        refresh();
+      } else {
+        window.addEventListener("scrollcraft:mounted", refresh, { once: true });
+      }
+
       return () => {
+        window.removeEventListener("scrollcraft:mounted", refresh);
         trigger.kill();
         gsap.set(cards, { clearProps: "all" });
       };
