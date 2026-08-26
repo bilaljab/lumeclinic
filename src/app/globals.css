@@ -110,9 +110,6 @@
 
   /* ease-* is a recognized theme namespace -> generates the `ease-editorial` utility */
   --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* animate-* is a recognized theme namespace -> generates the `animate-marquee` utility (Trust/testimonials) */
-  --animate-marquee: marquee-x 42s linear infinite;
 }
 
 /* plain CSS vars (no Tailwind utility-generation namespace for duration) —
@@ -190,50 +187,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 .rail::-webkit-scrollbar {
   display: none;
-}
-
-/*
- * In Their Words marquee (Trust.tsx) — pure CSS, no JS/GSAP. The animated
- * track is two identical, duplicated groups of cards side by side;
- * translateX(-50%) of that combined width lands exactly on the second
- * (pixel-identical) group, so the loop reads as seamless with no measured
- * widths needed. `[dir="rtl"]` reverses playback direction (same keyframe,
- * played backwards) rather than authoring a second animation, which moves
- * the strip the opposite physical way — matching RTL reading direction.
- */
-@keyframes marquee-x {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-[dir="rtl"] .testimonial-track {
-  animation-direction: reverse;
-}
-
-/*
- * Reduced motion gets a genuinely different, readable layout — not just a
- * frozen mid-scroll strip. The duplicate (aria-hidden) group is dropped and
- * the track becomes the section's original static 2-up grid.
- */
-@media (prefers-reduced-motion: reduce) {
-  .testimonial-track {
-    display: grid;
-    grid-template-columns: 1fr;
-    animation: none;
-    transform: none;
-    width: auto;
-  }
-  .testimonial-track-dup {
-    display: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) and (min-width: 768px) {
-  .testimonial-track {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 /*

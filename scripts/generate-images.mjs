@@ -49,6 +49,16 @@ const assets = [
       "Photograph of a translucent glass sculptural form with soft internal light and a warm burgundy glow inside, bone-white background, editorial studio photography.",
   },
   {
+    // Footer closing band (Footer.tsx) — a wide cinematic banner, not a
+    // product shot: deliberately different subject from the Brand
+    // Statement "Science" image above so the two don't read as the same
+    // stock photo reused twice.
+    out: "public/images/brand/footer-closing.jpg",
+    ratio: "2:1",
+    prompt:
+      "Editorial photograph of pale ivory silk fabric caught mid-motion, flowing and rippling through dark space, soft warm backlight tracing the folds with a subtle golden glow, deep charcoal background fading to black at the edges, elegant sense of movement, premium cinematic lighting, medium-format sharpness, high-end beauty editorial style.",
+  },
+  {
     out: "public/images/doctors/layla-al-faisal.jpg",
     ratio: "3:4",
     prompt:

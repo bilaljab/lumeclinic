@@ -34,7 +34,7 @@ export function Footer() {
           page's last piece of imagery before it resolves into plain text. */}
       <div className="relative h-[34vh] w-full overflow-hidden md:h-[44vh]" data-sc-parallax="-0.25">
         <Image
-          src="/images/brand/science.jpg"
+          src="/images/brand/footer-closing.jpg"
           alt=""
           fill
           sizes="100vw"
