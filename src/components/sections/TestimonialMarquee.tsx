@@ -15,7 +15,7 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
     : undefined;
 
   return (
-    <figure className="flex w-[82vw] shrink-0 snap-start flex-col sm:w-[420px] lg:w-[440px]">
+    <figure className="flex w-[82vw] shrink-0 flex-col sm:w-[420px] lg:w-[440px]">
       <div className="relative flex h-full flex-col rounded-sm border border-border bg-canvas p-8">
         <span aria-hidden className="select-none font-display text-[5rem] leading-none text-accent/10">
           &ldquo;
@@ -33,21 +33,19 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
 }
 
 /**
- * In Their Words — a horizontal strip the visitor can move themselves
- * (mouse-drag on desktop, native touch panning on mobile) in addition to a
- * gentle idle auto-scroll on desktop. Auto-scroll and manual drag both
- * operate on the element's real `scrollLeft` (not a CSS transform), which
- * is what lets them coexist without fighting each other. Desktop loops
- * seamlessly via a duplicated track; mobile has no auto-motion and no
- * duplicate — plain native scroll-snap. Reduced motion drops the idle
- * auto-scroll only; manual scrolling still works either way.
+ * In Their Words — moves by itself at rest, at every viewport size, and the
+ * visitor can take over any time (mouse-drag, or touch on mobile). Auto-
+ * scroll and manual drag both operate on the element's real `scrollLeft`
+ * (not a CSS transform), which is what lets them coexist without fighting
+ * each other, and the track is duplicated at every size so the idle loop
+ * always has a seamless seam to wrap on. Reduced motion drops only the idle
+ * auto-scroll; manual scrolling still works either way.
  */
 export function TestimonialMarquee() {
   const lang = useLocale() as keyof LocalizedText;
   const rtl = lang === "ar";
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const autoScroll = isDesktop && !reducedMotion;
+  const autoScroll = !reducedMotion;
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
@@ -82,11 +80,14 @@ export function TestimonialMarquee() {
   const dragState = useRef<{ startX: number; startScrollLeft: number } | null>(null);
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
-    if (e.pointerType === "touch") return; // native touch panning already handles this
+    // Pause idle auto-scroll for touch too, even though native panning (not
+    // this handler) does the actual moving — without this the rAF loop kept
+    // nudging scrollLeft while a finger was mid-swipe, fighting the touch.
+    draggingRef.current = true;
+    if (e.pointerType === "touch") return;
     const el = wrapRef.current;
     if (!el) return;
     dragState.current = { startX: e.clientX, startScrollLeft: el.scrollLeft };
-    draggingRef.current = true;
     el.setPointerCapture(e.pointerId);
   }
 
@@ -123,13 +124,13 @@ export function TestimonialMarquee() {
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
     >
-      <div className="testimonial-track flex w-max gap-8 px-page-x-sm snap-x snap-mandatory lg:snap-none lg:px-0">
+      <div className="testimonial-track flex w-max gap-8 px-page-x-sm lg:px-0">
         <div className="flex shrink-0 gap-8">
           {testimonials.map((testimonial) => (
             <TestimonialCard key={testimonial.id} testimonial={testimonial} lang={lang} />
           ))}
         </div>
-        <div aria-hidden className="testimonial-track-dup hidden shrink-0 gap-8 lg:flex">
+        <div aria-hidden className="testimonial-track-dup flex shrink-0 gap-8">
           {testimonials.map((testimonial) => (
             <TestimonialCard key={`dup-${testimonial.id}`} testimonial={testimonial} lang={lang} />
           ))}

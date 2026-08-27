@@ -101,6 +101,28 @@ export function SpatialShowcase({
     return () => observer.disconnect();
   }, [hasBeenInView]);
 
+  // R3F's <Canvas> mounting on this later, IntersectionObserver-triggered
+  // render (rather than on initial page load) can measure its container
+  // before that container's real box is settled, leaving the actual
+  // <canvas> element stuck at the browser's unstyled 300x150 default. A
+  // window `resize` event is what makes it re-measure and pick up the
+  // correct size — nudge one once the stage has actually mounted.
+  useEffect(() => {
+    if (!hasBeenInView || !useWebGL) return;
+    const nudge = () => window.dispatchEvent(new Event("resize"));
+    // A single rAF wasn't reliably enough slack for the container's layout
+    // to have settled — two more delayed nudges cover that without cost
+    // (dispatching once the size is already correct is a harmless no-op).
+    const raf = window.requestAnimationFrame(nudge);
+    const t1 = window.setTimeout(nudge, 60);
+    const t2 = window.setTimeout(nudge, 300);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [hasBeenInView, useWebGL]);
+
   const lastIndex = items.length - 1;
 
   function goTo(index: number) {
@@ -125,16 +147,25 @@ export function SpatialShowcase({
     }
   }
 
-  const dragRef = useRef<{ startX: number } | null>(null);
+  // Tracks the last-seen X on every move so a swipe still resolves correctly
+  // even when the browser ends the gesture with `pointercancel` instead of
+  // `pointerup` — which happens often on touch, since a finger swipe across
+  // the gallery is rarely perfectly horizontal and the browser can hand the
+  // gesture to native vertical scrolling mid-drag. Relying on the up/cancel
+  // event's own (possibly stale or absent) coordinates dropped swipes.
+  const dragRef = useRef<{ startX: number; lastX: number } | null>(null);
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
-    dragRef.current = { startX: e.clientX };
+    dragRef.current = { startX: e.clientX, lastX: e.clientX };
     e.currentTarget.setPointerCapture(e.pointerId);
   }
-  function onPointerUp(e: PointerEvent<HTMLDivElement>) {
-    const start = dragRef.current;
+  function onPointerMove(e: PointerEvent<HTMLDivElement>) {
+    if (dragRef.current) dragRef.current.lastX = e.clientX;
+  }
+  function finishDrag() {
+    const state = dragRef.current;
     dragRef.current = null;
-    if (!start) return;
-    const dx = e.clientX - start.startX;
+    if (!state) return;
+    const dx = state.lastX - state.startX;
     const THRESHOLD = 40;
     if (Math.abs(dx) < THRESHOLD) return;
     step(dx < 0 ? 1 : -1);
@@ -159,8 +190,34 @@ export function SpatialShowcase({
         tabIndex={0}
         onKeyDown={onKeyDown}
         onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
+        onPointerMove={onPointerMove}
+        onPointerUp={finishDrag}
+        onPointerCancel={finishDrag}
       >
+        {items.length > 1 ? (
+          <>
+            <button
+              type="button"
+              tabIndex={-1}
+              aria-hidden
+              onClick={() => step(-1)}
+              disabled={atStart}
+              className="absolute start-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-canvas/90 text-ink backdrop-blur-sm transition-[color,border-color,background-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 lg:flex"
+            >
+              <PrevIcon aria-hidden size={22} />
+            </button>
+            <button
+              type="button"
+              tabIndex={-1}
+              aria-hidden
+              onClick={() => step(1)}
+              disabled={atEnd}
+              className="absolute end-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-canvas/90 text-ink backdrop-blur-sm transition-[color,border-color,background-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 lg:flex"
+            >
+              <NextIcon aria-hidden size={22} />
+            </button>
+          </>
+        ) : null}
         {hasBeenInView ? (
           useWebGL ? (
             <SpatialStageWebGL

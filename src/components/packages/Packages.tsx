@@ -96,9 +96,14 @@ export async function Packages({ lang }: { lang: keyof LocalizedText }) {
   }));
 
   const staticContent = (
-    <div className="flex flex-col gap-12" data-sc-in data-sc-stagger="90">
+    <div className="flex flex-col gap-8" data-sc-in data-sc-stagger="90">
       {packages.map((pkg, i) => (
-        <div key={pkg.slug}>{renderCard(pkg, i)}</div>
+        <div
+          key={pkg.slug}
+          className="rounded-sm border border-border bg-canvas p-6 shadow-[0_24px_64px_-40px_rgba(32,27,24,0.35)] md:p-10"
+        >
+          {renderCard(pkg, i)}
+        </div>
       ))}
     </div>
   );

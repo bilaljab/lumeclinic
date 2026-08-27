@@ -30,7 +30,7 @@ export function BrandStatement({ lang }: { lang: keyof LocalizedText }) {
       data-sc-act="pin"
       data-sc-span="2"
       data-sc-mobile-flow
-      className="bg-canvas"
+      className="bg-canvas pt-12 md:pt-0"
     >
       <div data-sc-stage className="flex items-center">
         <Container>
