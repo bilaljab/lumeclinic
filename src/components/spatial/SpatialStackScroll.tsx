@@ -53,7 +53,12 @@ export function SpatialStackScroll({
       const applyFrame = (progress: number) => {
         cards.forEach((card, i) => {
           const enter = i === 0 ? 1 : clamp01(progress - (i - 1));
-          const recede = clamp01(progress - i);
+          // The last card has no successor to hand off to, so it must not
+          // recede once it arrives — without this it faded to 65% opacity
+          // and went inert right at the end of the pin's own range, leaving
+          // nothing in the foreground exactly when the user finishes
+          // scrolling through (the "it comes out empty" bug).
+          const recede = i === n - 1 ? 0 : clamp01(progress - i);
           const scale = 1 - ENTER_SCALE * (1 - enter) - RECEDE_SCALE * recede;
           const y = ENTER_Y * (1 - enter) - RECEDE_Y * recede;
           const baseOpacity = i === 0 ? 1 : enter;

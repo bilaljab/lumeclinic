@@ -37,10 +37,10 @@ const ENDPOINT = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.2-kl
 
 const assets = [
   {
-    out: "public/images/hero/hero-main-v2.jpg",
+    out: "public/images/hero/hero-main-v3.jpg",
     ratio: "2:1",
     prompt:
-      "Editorial beauty photograph of a woman's bare shoulder, neck, and jawline in soft profile, eyes closed, calm serene expression, head tilted slightly back, face and hair filling the upper half of the frame. Warm directional studio light grazing clean healthy skin, catching a subtle natural glow. A strip of deep burgundy silk fabric draped loosely at the shoulder for a single accent of colour. Seamless bone-white background, soft falloff into shadow at the frame edges. Medium-format sharpness, fine film grain, high-key with gentle contrast. Photographic realism, shot on a medium-format camera at 90mm, f/2.8, shallow depth of field.",
+      "Sharp high-resolution editorial beauty photograph of a woman's bare shoulder, neck, and jawline in soft profile, eyes closed, calm serene expression, head tilted slightly back, face and hair filling the upper half of the frame, crisp in-focus skin texture and hair strands. Warm directional studio light grazing clean healthy skin, catching a subtle natural glow. A strip of deep burgundy silk fabric draped loosely at the shoulder for a single accent of colour. Seamless bone-white background, soft falloff into shadow at the frame edges. Medium-format sharpness, fine film grain, high-key with gentle contrast. Photographic realism, shot on a medium-format camera at 90mm, f/2.8, shallow depth of field, tack-sharp focal plane.",
   },
   {
     out: "public/images/brand/science.jpg",

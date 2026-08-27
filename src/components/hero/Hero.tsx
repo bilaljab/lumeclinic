@@ -29,7 +29,7 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
       <HeroImageReveal>
         <div className="absolute inset-0" data-sc-parallax="-0.6">
           <Image
-            src="/images/hero/hero-main-v2.jpg"
+            src="/images/hero/hero-main-v3.jpg"
             alt=""
             fill
             priority
