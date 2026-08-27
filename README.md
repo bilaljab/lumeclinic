@@ -18,7 +18,7 @@ Full product spec: [LUME_PRD.md](LUME_PRD.md). Full tech spec: [LUME_TECH_STACK.
 
 ## Stack
 
-Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4. Motion runs on two systems: **ScrollCraft** (`public/scrollcraft.js`, a vanilla-JS `data-sc-*` markup engine — pins, scroll-scrub, staggered reveals; see `scrollcraft/FINGERPRINTS.md`) drives every scroll-linked device on the page, and **React Three Fiber** renders the one 3D moment (the Brand Statement "Science" beat), lazy-loaded and excluded from mobile/reduced-motion bundles entirely. i18n via `next-intl` (`/en`, `/ar`). Forms via React Hook Form + Zod. No backend, database, or auth — content lives in local TypeScript data files, and the booking flow ends in a mock confirmation state. Deployed on Vercel.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4. Motion runs on three coordinated systems, each owning a distinct part of the page: **ScrollCraft** (`public/scrollcraft.js`, a vanilla-JS `data-sc-*` markup engine — pins, scroll-scrub, staggered reveals, parallax, tilt) drives the site's original scroll-linked devices; **GSAP + ScrollTrigger + `@gsap/react`** (`src/components/motion/gsap.ts` — registration only, feature timelines live with their owning component) drive the Hero entrance and the Treatment Programs sticky stack; **React Three Fiber / Three.js** render two bounded WebGL spatial galleries (Explore by Concern, Trained to Listen) — lazy-mounted, `frameloop="demand"`, capped DPR, with a CSS-3D fallback stage for mobile, `prefers-reduced-motion`, and no-WebGL environments. i18n via `next-intl` (`/en`, `/ar`). Forms via React Hook Form + Zod. No backend, database, or auth — content lives in local TypeScript data files, and the booking flow ends in a mock confirmation state. Deployed on Vercel.
 
 ## Running the project
 
@@ -43,11 +43,11 @@ This is only needed if you're replacing the imagery — see [Adapting the templa
 ```
 src/
 ├── app/[locale]/         # routes — layout.tsx (fonts, providers, navbar/footer), page.tsx (section assembly)
-├── components/           # by domain, not file type: hero, treatments, doctors, results, booking, doctors, packages, sections, layout, motion, ui
+├── components/           # by domain, not file type: hero, treatments, doctors, results, booking, packages, sections, layout, motion, spatial, ui
 ├── data/                 # treatments.ts, doctors.ts, packages.ts, results.ts, testimonials.ts, journey.ts, brandStatement.ts, concerns.ts, types.ts
-├── config/                # site.ts (brand identity), theme.ts (JS-side color-token reader)
+├── config/                # site.ts (brand identity)
 ├── i18n/                  # next-intl routing/navigation/request config
-├── lib/                   # cn, whatsapp link builders, formResolver (RHF↔Zod), webgl capability check, scrollcraft.css
+├── lib/                   # cn, whatsapp link builders, formResolver (RHF↔Zod), useMediaQuery, scrollcraft.css
 ├── fonts/                 # self-hosted General Sans (Fontshare)
 └── proxy.ts               # next-intl middleware (Next.js 16 naming)
 messages/{en,ar}.json      # UI chrome strings only (nav, buttons, form labels, a11y) — never clinic content
@@ -79,7 +79,7 @@ Every piece of clinic content lives in a typed `LocalizedText` (`{ en, ar }`) sh
 
 `src/config/site.ts` is the single source of brand identity: brand name, logo wordmark, tagline/positioning/meta description (EN/AR), WhatsApp number, phone, email, location, social links, final-CTA copy, and the fictional-content disclaimer. Every component reads from `siteConfig` rather than hardcoding any of this — if a component ever needs a literal brand string, that's a bug (see `.claude/project-state.md`'s Phase 08 notes for the two such bugs fixed there).
 
-Design tokens (colors, type scale, spacing, radii, motion durations) live in `src/app/globals.css` under Tailwind v4's `@theme` — no `tailwind.config.js`, no scattered inline hex values. `src/config/theme.ts` exposes a `getColor()` helper that reads a token's live computed value at runtime, for the one place (the R3F 3D scene) that can't consume a CSS custom property directly.
+Design tokens (colors, type scale, spacing, radii, motion durations) live in `src/app/globals.css` under Tailwind v4's `@theme` — no `tailwind.config.js`, no scattered inline hex values. The R3F spatial galleries don't read theme colors (they render photography textures only, no colored materials), so there's no JS-side color-token reader in this codebase.
 
 ## Customization workflow
 

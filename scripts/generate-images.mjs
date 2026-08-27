@@ -37,16 +37,34 @@ const ENDPOINT = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.2-kl
 
 const assets = [
   {
-    out: "public/images/hero/hero-main-v2.jpg",
+    out: "public/images/hero/hero-main-v3.jpg",
     ratio: "2:1",
+    // Soft-focus, low-detail-frequency composition on purpose: this
+    // endpoint always renders a fixed 1024x1024 image regardless of the
+    // requested aspect_ratio (confirmed empirically — every asset in this
+    // file comes back 1024x1024), and the hero's full-bleed wide crop on
+    // desktop displays that source stretched well past its native width on
+    // any wide or high-DPI monitor. A crisp, fine-detail source shows that
+    // upscale as visible blur; a deliberately soft, glowing, low-texture
+    // one reads as an intentional editorial soft-focus look instead.
     prompt:
-      "Editorial beauty photograph of a woman's bare shoulder, neck, and jawline in soft profile, eyes closed, calm serene expression, head tilted slightly back, face and hair filling the upper half of the frame. Warm directional studio light grazing clean healthy skin, catching a subtle natural glow. A strip of deep burgundy silk fabric draped loosely at the shoulder for a single accent of colour. Seamless bone-white background, soft falloff into shadow at the frame edges. Medium-format sharpness, fine film grain, high-key with gentle contrast. Photographic realism, shot on a medium-format camera at 90mm, f/2.8, shallow depth of field.",
+      "Soft-focus editorial beauty photograph of a woman's bare shoulder, neck, and jawline in gentle profile, eyes closed, calm serene expression, head tilted slightly back, face and hair filling the upper half of the frame. Diffused glowing studio light wrapping softly around clean luminous skin, dreamy shallow depth of field, gentle bloom, minimal visible skin texture, soft airy rendering. A strip of deep burgundy silk fabric draped loosely at the shoulder for a single accent of colour. Seamless bone-white background fading into a soft light haze at the edges. Ethereal high-key beauty editorial style, soft glowing highlights, gentle film grain. Photographic realism, shot at 90mm, f/1.8, creamy soft-focus depth of field.",
   },
   {
     out: "public/images/brand/science.jpg",
     ratio: "3:2",
     prompt:
       "Photograph of a translucent glass sculptural form with soft internal light and a warm burgundy glow inside, bone-white background, editorial studio photography.",
+  },
+  {
+    // Footer closing band (Footer.tsx) — a wide cinematic banner, not a
+    // product shot: deliberately different subject from the Brand
+    // Statement "Science" image above so the two don't read as the same
+    // stock photo reused twice.
+    out: "public/images/brand/footer-closing.jpg",
+    ratio: "2:1",
+    prompt:
+      "Editorial photograph of pale ivory silk fabric caught mid-motion, flowing and rippling through dark space, soft warm backlight tracing the folds with a subtle golden glow, deep charcoal background fading to black at the edges, elegant sense of movement, premium cinematic lighting, medium-format sharpness, high-end beauty editorial style.",
   },
   {
     out: "public/images/doctors/layla-al-faisal.jpg",

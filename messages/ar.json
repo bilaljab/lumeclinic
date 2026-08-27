@@ -19,7 +19,9 @@
     "bookWith": "احجزي مع {name}"
   },
   "common": {
-    "minutesLabel": "{count} دقيقة"
+    "minutesLabel": "{count} دقيقة",
+    "previous": "السابق",
+    "next": "التالي"
   },
   "a11y": {
     "skipToContent": "تخطَّ إلى المحتوى",
@@ -32,7 +34,8 @@
     "subheading": "أخبرينا بما تريدين العمل عليه، وسنعرض لك العلاجات المناسبة.",
     "allLabel": "الكل",
     "countLabel": "{count} علاجات",
-    "emptyLabel": "لا توجد علاجات مطابقة بعد، جرّب اهتماماً آخر."
+    "emptyLabel": "لا توجد علاجات مطابقة بعد، جرّب اهتماماً آخر.",
+    "galleryLabel": "معرض العلاجات"
   },
   "results": {
     "heading": "نتائج تُعرض بصدق",
@@ -49,7 +52,8 @@
     "heading": "مدربون على الإصغاء أولاً",
     "experienceLabel": "{years} سنة خبرة",
     "languagesLabel": "اللغات",
-    "expertiseLabel": "مجالات التركيز"
+    "expertiseLabel": "مجالات التركيز",
+    "galleryLabel": "معرض الأطباء"
   },
   "journey": {
     "heading": "رحلة العلاج"
@@ -57,7 +61,8 @@
   "packages": {
     "eyebrow": "البرامج",
     "heading": "برامج العلاج",
-    "includesLabel": "يشمل"
+    "includesLabel": "يشمل",
+    "galleryLabel": "معرض البرامج"
   },
   "trust": {
     "heading": "بكلماتهم"

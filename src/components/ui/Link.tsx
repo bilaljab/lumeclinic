@@ -8,6 +8,15 @@ import { cn } from "@/lib/cn";
 const base =
   "underline underline-offset-4 decoration-border decoration-1 transition-colors duration-200 ease-editorial hover:decoration-accent hover:text-accent active:text-accent-hover active:duration-100 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
 
+/**
+ * Exposed for the rare case that needs this exact link treatment on a
+ * component EditorialLink itself can't wrap — e.g. next-intl's `<Link
+ * locale={...}>` prop isn't part of `ComponentProps<"a">`, so the footer's
+ * language switch (which needs `locale`) applies these classes to a raw
+ * `<Link>` directly instead of forking a second link style for one instance.
+ */
+export const editorialLinkClasses = base;
+
 type Props = {
   href: string;
   external?: boolean;

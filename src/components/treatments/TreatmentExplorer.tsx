@@ -4,15 +4,16 @@ import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ImageWrapper } from "@/components/ui/ImageWrapper";
 import { EditorialLink } from "@/components/ui/Link";
 import { BookingIntentCta } from "@/components/booking/BookingIntentCta";
+import { SpatialShowcase } from "@/components/spatial/SpatialShowcase";
 import { cn } from "@/lib/cn";
 import { buildWhatsAppLink, treatmentWhatsAppMessage } from "@/lib/whatsapp";
 import { concernGroupLabels, concernGroupOrder, concernGroups } from "@/data/concerns";
 import { treatments } from "@/data/treatments";
 import type { ConcernGroup } from "@/data/concerns";
 import type { LocalizedText } from "@/data/types";
+import type { SpatialShowcaseItem } from "@/components/spatial/types";
 
 type Filter = ConcernGroup | "all";
 
@@ -30,6 +31,37 @@ export function TreatmentExplorer() {
         ? treatments
         : treatments.filter((tr) => tr.concerns.some((c) => concernGroups[filter].includes(c))),
     [filter],
+  );
+
+  const showcaseItems: SpatialShowcaseItem[] = useMemo(
+    () =>
+      filtered.map((treatment) => ({
+        key: treatment.slug,
+        image: { src: treatment.image, alt: treatment.name[lang] },
+        overlay: (
+          <div className="flex flex-col gap-4">
+            <p className="text-label uppercase tracking-label text-neutral">
+              {common("minutesLabel", { count: treatment.durationMinutes })}
+            </p>
+            <h3 className="font-display text-display-m">{treatment.name[lang]}</h3>
+            <p className="text-body text-ink/80">{treatment.shortDescription[lang]}</p>
+            <p className="text-label uppercase tracking-label text-neutral">{treatment.recovery[lang]}</p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <BookingIntentCta intent={{ treatmentSlug: treatment.slug }} variant="primary" className="px-4 py-2">
+                {cta("bookTreatment")}
+              </BookingIntentCta>
+              <EditorialLink
+                href={buildWhatsAppLink(lang, treatmentWhatsAppMessage(treatment.name))}
+                external
+                aria-label={`${cta("viewDetails")} — ${treatment.name[lang]}`}
+              >
+                {cta("viewDetails")}
+              </EditorialLink>
+            </div>
+          </div>
+        ),
+      })),
+    [filtered, lang, common, cta],
   );
 
   return (
@@ -78,44 +110,17 @@ export function TreatmentExplorer() {
       {filtered.length === 0 ? (
         <p className="mt-8 text-body text-neutral">{t("emptyLabel")}</p>
       ) : (
-        <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" data-sc-in data-sc-stagger="60">
-          {filtered.map((treatment) => (
-            <article key={treatment.slug} className="flex flex-col gap-4">
-              <ImageWrapper
-                src={treatment.image}
-                alt={treatment.name[lang]}
-                fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                wrapperClassName="aspect-[3/2]"
-                className="transition-transform duration-500 ease-editorial hover:scale-[1.03]"
-                caption={common("minutesLabel", { count: treatment.durationMinutes })}
-                tilt={6}
-              />
-              <div>
-                <h3 className="font-display text-display-m">{treatment.name[lang]}</h3>
-                <p className="mt-2 text-body text-ink/80">{treatment.shortDescription[lang]}</p>
-                <p className="mt-3 text-label uppercase tracking-label text-neutral">
-                  {treatment.recovery[lang]}
-                </p>
-              </div>
-              <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2">
-                <BookingIntentCta
-                  intent={{ treatmentSlug: treatment.slug }}
-                  variant="primary"
-                  className="px-4 py-2"
-                >
-                  {cta("bookTreatment")}
-                </BookingIntentCta>
-                <EditorialLink
-                  href={buildWhatsAppLink(lang, treatmentWhatsAppMessage(treatment.name))}
-                  external
-                  aria-label={`${cta("viewDetails")} — ${treatment.name[lang]}`}
-                >
-                  {cta("viewDetails")}
-                </EditorialLink>
-              </div>
-            </article>
-          ))}
+        <div className="mt-10">
+          <SpatialShowcase
+            key={filter}
+            items={showcaseItems}
+            mode="treatment"
+            labels={{
+              previous: common("previous"),
+              next: common("next"),
+              gallery: t("galleryLabel"),
+            }}
+          />
         </div>
       )}
     </Section>

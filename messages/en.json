@@ -19,7 +19,9 @@
     "bookWith": "Book with {name}"
   },
   "common": {
-    "minutesLabel": "{count} min"
+    "minutesLabel": "{count} min",
+    "previous": "Previous",
+    "next": "Next"
   },
   "a11y": {
     "skipToContent": "Skip to content",
@@ -32,7 +34,8 @@
     "subheading": "Tell us what you want to work on — we'll surface the right treatments.",
     "allLabel": "All",
     "countLabel": "{count} treatments",
-    "emptyLabel": "No treatments match yet — try another concern."
+    "emptyLabel": "No treatments match yet — try another concern.",
+    "galleryLabel": "Treatment gallery"
   },
   "results": {
     "heading": "Results, Shown Honestly",
@@ -49,7 +52,8 @@
     "heading": "Trained to Listen First",
     "experienceLabel": "{years} Years Experience",
     "languagesLabel": "Languages",
-    "expertiseLabel": "Focus Areas"
+    "expertiseLabel": "Focus Areas",
+    "galleryLabel": "Doctor showcase"
   },
   "journey": {
     "heading": "The Treatment Journey"
@@ -57,7 +61,8 @@
   "packages": {
     "eyebrow": "Programs",
     "heading": "Treatment Programs",
-    "includesLabel": "Includes"
+    "includesLabel": "Includes",
+    "galleryLabel": "Programs gallery"
   },
   "trust": {
     "heading": "In Their Words"
