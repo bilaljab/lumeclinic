@@ -4,21 +4,25 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { EditorialLink } from "@/components/ui/Link";
+import { EditorialLink, editorialLinkClasses } from "@/components/ui/Link";
+import { cn } from "@/lib/cn";
 import { siteConfig } from "@/config/site";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import type { LocalizedText } from "@/data/types";
 
-const anchors = [
-  { href: "/#treatments", key: "treatments" as const },
-  { href: "/#doctors", key: "doctors" as const },
-  { href: "/#results", key: "results" as const },
-  { href: "/#packages", key: "packages" as const },
-];
-
-/** PRD §6.12 — real footer: brand, contact, location, WhatsApp, socials, nav, language, disclaimer. */
+/**
+ * PRD §6.12 — real footer: brand, contact, location, WhatsApp, socials,
+ * language, disclaimer. Two things deliberately NOT here, both found during
+ * an Impeccable critique pass: a repeated nav-links column (this is a
+ * one-page site — those same four anchors already live in the navbar, so a
+ * second copy is pure sitemap-template filler, not a new affordance) and a
+ * second "Ready to Reimagine Your Skin?" CTA banner (FinalCta.tsx already
+ * owns that beat per PRD §6.11 — repeating its exact headline in a flatter
+ * register undercuts it instead of closing the page strongly). The booking
+ * nudge that conversion.md still requires here lives inline in the brand
+ * column instead of as a duplicate hero-style banner.
+ */
 export function Footer() {
   const nav = useTranslations("nav");
   const footer = useTranslations("footer");
@@ -29,49 +33,39 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-canvas">
-      {/* Cinematic closing beat: one contained visual moment fading into the
-          footer's own canvas background, not a full-screen block — the
-          page's last piece of imagery before it resolves into plain text. */}
-      <div className="relative h-[34vh] w-full overflow-hidden md:h-[44vh]" data-sc-parallax="-0.25">
-        <Image
-          src="/images/brand/footer-closing.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
+      {/* Cinematic closing beat: a contained visual moment fading into the
+          footer's own canvas background. `data-sc-act="flow"` is what
+          actually activates the parallax/reveal devices below — ScrollCraft
+          only scans an element's `data-sc-*` children when the element
+          itself carries `data-sc-act` (see public/scrollcraft.js's act
+          collection pass), so the parallax this band already authored was
+          silently inert without it. */}
+      <div className="relative h-[34vh] w-full overflow-hidden md:h-[44vh]" data-sc-act="flow">
+        <div className="absolute inset-0" data-sc-reveal="up">
+          <Image
+            src="/images/brand/footer-closing.jpg"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+            data-sc-parallax="-0.25"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-ground-deep/25 via-ground-deep/10 to-canvas" />
       </div>
 
       <Container
-        className="flex flex-wrap items-center justify-between gap-6 border-b border-border py-8"
+        className="grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]"
         data-sc-in
+        data-sc-stagger="60"
       >
-        <p className="font-display text-display-m">{siteConfig.finalCta.headline[locale]}</p>
-        <div className="flex flex-wrap gap-4">
-          <Button href="/#booking-form" variant="primary">
-            {cta("bookConsultation")}
-          </Button>
-          <Button href={buildWhatsAppLink(locale)} external variant="secondary">
-            {cta("whatsapp")}
-          </Button>
-        </div>
-      </Container>
-
-      <Container className="grid gap-12 py-16 md:grid-cols-4" data-sc-in data-sc-stagger="60">
-        <div className="flex flex-col gap-3 md:col-span-1">
-          <p className="font-display text-display-m">{siteConfig.brandName}</p>
+        <div className="flex flex-col gap-4">
+          <p className="font-display text-display-l">{siteConfig.brandName}</p>
           <p className="max-w-xs text-body text-ink/80">{siteConfig.tagline[locale]}</p>
+          <EditorialLink href="/#booking-form" className="mt-2 w-fit">
+            {cta("bookConsultation")}
+          </EditorialLink>
         </div>
-
-        <nav aria-label={footer("navHeading")} className="flex flex-col gap-3">
-          <p className="text-label uppercase tracking-label text-neutral">{footer("navHeading")}</p>
-          {anchors.map((a) => (
-            <EditorialLink key={a.key} href={a.href}>
-              {nav(a.key)}
-            </EditorialLink>
-          ))}
-        </nav>
 
         <div className="flex flex-col gap-3">
           <p className="text-label uppercase tracking-label text-neutral">{footer("contactHeading")}</p>
@@ -85,7 +79,7 @@ export function Footer() {
             </span>
           </EditorialLink>
           <EditorialLink href={buildWhatsAppLink(locale)} external>
-            WhatsApp
+            {cta("whatsapp")}
           </EditorialLink>
           <EditorialLink href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</EditorialLink>
         </div>
@@ -98,17 +92,19 @@ export function Footer() {
           <EditorialLink href={siteConfig.social.tiktok} external>
             TikTok
           </EditorialLink>
-          <Link href={pathname} locale={otherLocale} className="mt-2 py-1 text-label uppercase tracking-label underline underline-offset-4">
-            {nav("switchLanguage")}
-          </Link>
         </div>
       </Container>
 
-      <Container className="flex flex-col gap-2 border-t border-border py-6 text-label text-neutral md:flex-row md:items-center md:justify-between">
+      <Container className="flex flex-col gap-3 border-t border-border py-6 text-label text-neutral md:flex-row md:items-center md:justify-between">
         <p>
           © {new Date().getFullYear()} {siteConfig.brandName} — {footer("rights")}
         </p>
-        <p>{siteConfig.fictionalContentDisclaimer[locale]}</p>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <p>{siteConfig.fictionalContentDisclaimer[locale]}</p>
+          <Link href={pathname} locale={otherLocale} className={cn(editorialLinkClasses, "shrink-0")}>
+            {nav("switchLanguage")}
+          </Link>
+        </div>
       </Container>
     </footer>
   );
