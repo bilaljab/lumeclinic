@@ -38,7 +38,24 @@ function GalleryPlane({
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const enteredRef = useRef(false);
-  const texture = useLoader(THREE.TextureLoader, src);
+  const rawTexture = useLoader(THREE.TextureLoader, src);
+  // TextureLoader defaults to NoColorSpace; the renderer's sRGB output then
+  // applies its transfer function on top of already-sRGB photo data,
+  // double-gamma-correcting it into the washed-out/overbright look the CSS
+  // fallback stage (plain <Image>, no color-management pipeline) doesn't
+  // have. `rawTexture` is a hook return value the React Compiler forbids
+  // mutating (its cache is shared across every plane using this URL), so a
+  // cheap per-plane `clone()` — same underlying decoded image, no refetch —
+  // is what actually gets the corrected colorSpace, and this clone (unlike
+  // the shared original) is ours to dispose.
+  const texture = useMemo(() => {
+    const clone = rawTexture.clone();
+    clone.colorSpace = THREE.SRGBColorSpace;
+    clone.needsUpdate = true;
+    return clone;
+  }, [rawTexture]);
+  useEffect(() => () => texture.dispose(), [texture]);
+
   const material = useMemo(
     () => new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0 }),
     [texture],
@@ -47,10 +64,8 @@ function GalleryPlane({
   const sign = rtl ? -1 : 1;
 
   // Materials are created per plane (only the map differs), so each one is
-  // disposed as its plane leaves the active/neighbor window. The texture
-  // itself is left alone — three's loader cache keeps it reusable for the
-  // lifetime of this showcase instance without a refetch, and the whole GPU
-  // allocation is reclaimed anyway once the parent Canvas unmounts.
+  // disposed as its plane leaves the active/neighbor window — same lifecycle
+  // for the cloned texture above, via its own effect.
   useEffect(() => () => material.dispose(), [material]);
 
   useEffect(() => {
