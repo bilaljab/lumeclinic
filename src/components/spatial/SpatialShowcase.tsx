@@ -155,6 +155,14 @@ export function SpatialShowcase({
   // event's own (possibly stale or absent) coordinates dropped swipes.
   const dragRef = useRef<{ startX: number; lastX: number } | null>(null);
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
+    // The overlay prev/next buttons live inside this same drag-handling
+    // element. Without this check, setPointerCapture below (called on
+    // every pointerdown, including ones that start on a button) hijacks
+    // the mouseup/click that a real click depends on, so a real mouse
+    // click on the overlay arrows silently did nothing — even though a
+    // purely synthetic `.click()` call bypassed the whole pointer
+    // pipeline and looked fine in isolation.
+    if ((e.target as HTMLElement).closest("button")) return;
     dragRef.current = { startX: e.clientX, lastX: e.clientX };
     e.currentTarget.setPointerCapture(e.pointerId);
   }
@@ -198,23 +206,21 @@ export function SpatialShowcase({
           <>
             <button
               type="button"
-              tabIndex={-1}
-              aria-hidden
               onClick={() => step(-1)}
               disabled={atStart}
-              className="absolute start-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-canvas/90 text-ink backdrop-blur-sm transition-[color,border-color,background-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 lg:flex"
+              aria-label={labels.previous}
+              className="absolute start-4 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-canvas/90 text-ink backdrop-blur-sm transition-[color,border-color,background-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
             >
-              <PrevIcon aria-hidden size={22} />
+              <PrevIcon aria-hidden size={24} />
             </button>
             <button
               type="button"
-              tabIndex={-1}
-              aria-hidden
               onClick={() => step(1)}
               disabled={atEnd}
-              className="absolute end-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-canvas/90 text-ink backdrop-blur-sm transition-[color,border-color,background-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 lg:flex"
+              aria-label={labels.next}
+              className="absolute end-4 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-canvas/90 text-ink backdrop-blur-sm transition-[color,border-color,background-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
             >
-              <NextIcon aria-hidden size={22} />
+              <NextIcon aria-hidden size={24} />
             </button>
           </>
         ) : null}
@@ -238,16 +244,6 @@ export function SpatialShowcase({
 
         {items.length > 1 ? (
           <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => step(-1)}
-              disabled={atStart}
-              aria-label={labels.previous}
-              className="flex h-9 w-9 items-center justify-center rounded-sm border border-border text-ink transition-[color,border-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
-            >
-              <PrevIcon aria-hidden size={16} />
-            </button>
-
             <div role="tablist" aria-label={labels.gallery} className="flex items-center">
               {items.map((item, i) => (
                 <button
@@ -270,16 +266,6 @@ export function SpatialShowcase({
                 </button>
               ))}
             </div>
-
-            <button
-              type="button"
-              onClick={() => step(1)}
-              disabled={atEnd}
-              aria-label={labels.next}
-              className="flex h-9 w-9 items-center justify-center rounded-sm border border-border text-ink transition-[color,border-color] duration-200 ease-editorial hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
-            >
-              <NextIcon aria-hidden size={16} />
-            </button>
           </div>
         ) : null}
       </div>
