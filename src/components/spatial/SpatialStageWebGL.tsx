@@ -12,6 +12,23 @@ const ROTATION_STEP = 0.42;
 const NEIGHBOR_SCALE = 0.74;
 const NEIGHBOR_OPACITY = 0.42;
 const SETTLE_DURATION = 0.65;
+// A plane on this stage never displays anywhere near full source resolution,
+// so texture loads route through Next's image optimizer at this width
+// (one of its fixed allowed sizes) instead of fetching the original file.
+const TEXTURE_WIDTH = 828;
+
+/**
+ * `useLoader(TextureLoader, src)` fetches `src` directly — unlike every
+ * `next/image` on this site, that request never goes through Next's image
+ * optimizer, so it was pulling the full-resolution, uncompressed-for-the-web
+ * original JPEG on every load instead of a resized, WebP/AVIF-negotiated
+ * one. That extra weight was the actual cause of the gallery images taking
+ * a noticeable moment to appear — routing through the same `/_next/image`
+ * endpoint the rest of the site already uses fixes it at the source.
+ */
+function optimizedTextureSrc(src: string, width: number) {
+  return `/_next/image?url=${encodeURIComponent(src)}&w=${width}&q=75`;
+}
 
 type WindowedItem = { item: SpatialShowcaseItem; offset: number };
 
@@ -38,7 +55,7 @@ function GalleryPlane({
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const enteredRef = useRef(false);
-  const rawTexture = useLoader(THREE.TextureLoader, src);
+  const rawTexture = useLoader(THREE.TextureLoader, optimizedTextureSrc(src, TEXTURE_WIDTH));
   // TextureLoader defaults to NoColorSpace; the renderer's sRGB output then
   // applies its transfer function on top of already-sRGB photo data,
   // double-gamma-correcting it into the washed-out/overbright look the CSS
