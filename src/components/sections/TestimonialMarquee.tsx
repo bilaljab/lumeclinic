@@ -8,6 +8,12 @@ import { treatments } from "@/data/treatments";
 import type { LocalizedText, Testimonial } from "@/data/types";
 
 const AUTO_SCROLL_PX_PER_SEC = 28;
+// How long after any scroll movement NOT caused by the auto-scroll loop
+// itself (native touch scroll, mouse-drag, keyboard) to keep the idle loop
+// paused before resuming. A cooldown window rather than an exact "did the
+// interaction end" signal, because that signal is the part that's fragile —
+// see the comment on the scroll listener below.
+const EXTERNAL_SCROLL_COOLDOWN_MS = 150;
 
 function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang: keyof LocalizedText }) {
   const treatment = testimonial.treatmentSlug
@@ -34,12 +40,23 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
 
 /**
  * In Their Words — moves by itself at rest, at every viewport size, and the
- * visitor can take over any time (mouse-drag, or touch on mobile). Auto-
- * scroll and manual drag both operate on the element's real `scrollLeft`
- * (not a CSS transform), which is what lets them coexist without fighting
- * each other, and the track is duplicated at every size so the idle loop
- * always has a seamless seam to wrap on. Reduced motion drops only the idle
- * auto-scroll; manual scrolling still works either way.
+ * visitor can take over any time (mouse-drag, or native touch scroll on
+ * mobile). Auto-scroll and manual scrolling both operate on the element's
+ * real `scrollLeft` (not a CSS transform), and the track is duplicated at
+ * every size so the idle loop always has a seamless seam to wrap on.
+ *
+ * Touch deliberately does NOT go through a JS pointer-drag path — this
+ * element is a genuine native scroll container (`overflow-x-auto`), and
+ * layering `setPointerCapture` on top of that turned out to be the wrong
+ * call: on a real phone, a captured touch pointer on a scrollable element
+ * can be released by the browser (handing the gesture to native scrolling)
+ * without ever firing `pointercancel`/`pointerup`, which left this
+ * component's old drag-tracking flag stuck "dragging" forever and froze
+ * the idle loop permanently. Touch scrolling is left entirely to the
+ * browser; the idle loop instead watches the element's native `scroll`
+ * event to know when *anything* — touch, mouse-drag, keyboard — is moving
+ * it externally, and pauses for a short cooldown around that, which works
+ * the same way regardless of what caused the scroll.
  */
 export function TestimonialMarquee() {
   const lang = useLocale() as keyof LocalizedText;
@@ -49,12 +66,21 @@ export function TestimonialMarquee() {
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
-  const draggingRef = useRef(false);
+  const autoWritingRef = useRef(false);
+  const lastExternalScrollRef = useRef(0);
 
   useEffect(() => {
     if (!autoScroll) return;
     const el = wrapRef.current;
     if (!el) return;
+
+    function onScroll() {
+      // Ignore the scroll events the loop's own writes below generate —
+      // only a write from something else (touch, drag, keyboard) counts as
+      // "the visitor is interacting," and should pause the idle loop.
+      if (!autoWritingRef.current) lastExternalScrollRef.current = performance.now();
+    }
+    el.addEventListener("scroll", onScroll, { passive: true });
 
     const sign = rtl ? -1 : 1;
     let last = performance.now();
@@ -64,34 +90,30 @@ export function TestimonialMarquee() {
       const dt = (now - last) / 1000;
       last = now;
       const node = wrapRef.current;
-      if (node && !pausedRef.current && !draggingRef.current) {
+      const recentlyExternal = now - lastExternalScrollRef.current < EXTERNAL_SCROLL_COOLDOWN_MS;
+      if (node && !pausedRef.current && !recentlyExternal) {
+        autoWritingRef.current = true;
         node.scrollLeft += sign * AUTO_SCROLL_PX_PER_SEC * dt;
         const half = node.scrollWidth / 2;
         while (Math.abs(node.scrollLeft) >= half) {
           node.scrollLeft += node.scrollLeft > 0 ? -half : half;
         }
+        autoWritingRef.current = false;
       }
       raf = requestAnimationFrame(step);
     }
 
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener("scroll", onScroll);
+    };
   }, [autoScroll, rtl]);
 
   const dragState = useRef<{ startX: number; startScrollLeft: number } | null>(null);
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
-    // Touch used to fall through to native scrolling instead of this handler,
-    // relying on the browser to move `scrollLeft` on its own. That raced the
-    // idle auto-scroll rAF loop below: if `draggingRef` ever read false for
-    // even one frame while a native touch-scroll gesture was still in
-    // progress, the loop's own `scrollLeft` write would fight the finger's
-    // position on every subsequent frame, reading as the strip freezing or
-    // refusing to move. Driving touch through the exact same manual
-    // scrollLeft path as mouse (paired with `touch-pan-y` on the element so
-    // the browser never also tries to scroll it natively) removes that race
-    // entirely — same approach already used for drag in SpatialShowcase and
-    // ProgramsCarousel.
-    draggingRef.current = true;
+    // Mouse only — see the component doc comment for why touch stays native.
+    if (e.pointerType === "touch") return;
     const el = wrapRef.current;
     if (!el) return;
     dragState.current = { startX: e.clientX, startScrollLeft: el.scrollLeft };
@@ -107,13 +129,12 @@ export function TestimonialMarquee() {
 
   function endDrag() {
     dragState.current = null;
-    draggingRef.current = false;
   }
 
   return (
     <div
       ref={wrapRef}
-      className="rail relative mt-10 -mx-page-x-sm cursor-grab touch-pan-y overflow-x-auto select-none active:cursor-grabbing lg:mx-0"
+      className="rail relative mt-10 -mx-page-x-sm cursor-grab overflow-x-auto select-none active:cursor-grabbing lg:mx-0"
       onMouseEnter={() => {
         pausedRef.current = true;
       }}
