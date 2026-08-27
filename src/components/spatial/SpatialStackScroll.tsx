@@ -2,7 +2,6 @@
 
 import { useRef, type ReactNode } from "react";
 import { useGSAP, gsap, ScrollTrigger } from "@/components/motion/gsap";
-import { useMediaQuery } from "@/lib/useMediaQuery";
 import { cn } from "@/lib/cn";
 
 export type StackItem = { key: string; content: ReactNode };
@@ -20,11 +19,25 @@ function clamp01(value: number) {
 /**
  * Sticky-progression stack for Treatment Programs — one program pinned and
  * focused at a time, prior ones receding as thin depth cues behind it,
- * scrubbed to scroll. Desktop/no-reduced-motion only (gsap.matchMedia);
- * mobile and prefers-reduced-motion render the plain vertical flow passed
- * as `staticContent` instead — a different DOM shape, not just different
- * inline styles, since a pinned/absolute layout has no readable un-animated
- * resting state of its own.
+ * scrubbed to scroll.
+ *
+ * Both the pinned-stack markup and the plain mobile/reduced-motion flow are
+ * ALWAYS in the DOM; only CSS (`hidden lg:motion-safe:block` /
+ * `block lg:motion-safe:hidden`) decides which one is visible, and
+ * `gsap.matchMedia()` — not a React conditional return — decides whether
+ * the ScrollTrigger pin exists. Real-browser testing found a genuine bug
+ * with the previous approach (a React-driven `if (!stacked) return
+ * <different JSX>`): GSAP's `pin` wraps the pinned element in a pin-spacer
+ * <div> it inserts directly into the DOM, outside React's knowledge. A live
+ * window resize crossing the breakpoint (no page reload) could fire
+ * React's own DOM patch for the conditional swap *before* the effect
+ * cleanup (`trigger.kill()`) had a chance to un-wrap that pin-spacer,
+ * leaving the new static content trapped inside a leftover wrapper still
+ * carrying the pinned layout's inline height/padding — the exact "container
+ * gone, cards stacked on top of each other" bug. Keeping the DOM shape
+ * constant and letting GSAP's own matchMedia (which reverts everything it
+ * created, via its own resize listener, independent of React's render
+ * cycle) own the pin's existence removes that race entirely.
  */
 export function SpatialStackScroll({
   items,
@@ -38,26 +51,19 @@ export function SpatialStackScroll({
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const stacked = isDesktop && !reducedMotion;
 
   useGSAP(
     () => {
-      if (!stacked || !stageRef.current) return;
       const cards = cardRefs.current.filter((el): el is HTMLDivElement => el !== null);
-      if (cards.length === 0) return;
-
+      if (!stageRef.current || cards.length === 0) return;
       const n = cards.length;
 
       const applyFrame = (progress: number) => {
         cards.forEach((card, i) => {
           const enter = i === 0 ? 1 : clamp01(progress - (i - 1));
           // The last card has no successor to hand off to, so it must not
-          // recede once it arrives — without this it faded to 65% opacity
-          // and went inert right at the end of the pin's own range, leaving
-          // nothing in the foreground exactly when the user finishes
-          // scrolling through (the "it comes out empty" bug).
+          // recede once it arrives — it holds fully visible/interactive
+          // for the rest of the pin's range instead of fading to nothing.
           const recede = i === n - 1 ? 0 : clamp01(progress - i);
           const scale = 1 - ENTER_SCALE * (1 - enter) - RECEDE_SCALE * recede;
           const y = ENTER_Y * (1 - enter) - RECEDE_Y * recede;
@@ -66,71 +72,91 @@ export function SpatialStackScroll({
           gsap.set(card, { scale, yPercent: y, autoAlpha: opacity });
           const isForeground = opacity > 0.85;
           card.style.pointerEvents = isForeground ? "auto" : "none";
-          // pointer-events alone doesn't remove a receded/not-yet-revealed
-          // card's links from Tab order or the a11y tree — `inert` does both,
-          // so keyboard/screen-reader users only ever reach the one card
-          // that's actually in focus.
           card.inert = !isForeground;
         });
       };
 
-      applyFrame(0);
+      const mm = gsap.matchMedia();
 
-      const trigger = ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top 80px",
-        end: () => "+=" + n * 0.62 * window.innerHeight,
-        pin: stageRef.current,
-        scrub: 0.4,
-        onUpdate: (self) => applyFrame(self.progress * n),
-      });
+      mm.add(
+        {
+          isDesktop: "(min-width: 1024px)",
+          reducedMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { isDesktop, reducedMotion } = context.conditions as {
+            isDesktop: boolean;
+            reducedMotion: boolean;
+          };
 
-      // This pin is created the moment `stacked` flips true, which can
-      // land before ScrollCraft's own pinned sections above it (Brand
-      // Statement, Before/After peak, Treatment Journey) have finished
-      // inserting their pin-spacing — that insertion shifts this section
-      // down by thousands of px. GSAP measures trigger position once at
-      // creation and never re-measures on its own, so this pin's start/end
-      // freeze against the pre-ScrollCraft-mount layout: it then renders
-      // blank in its real slot and appears wherever that stale offset
-      // lands instead. `ScrollCraftMount` dispatches `scrollcraft:mounted`
-      // right after its own mount() call for exactly this reason.
-      const refresh = () => ScrollTrigger.refresh();
-      if (window.__scrollCraftMounted) {
-        refresh();
-      } else {
-        window.addEventListener("scrollcraft:mounted", refresh, { once: true });
-      }
+          if (!isDesktop || reducedMotion) {
+            // The static flow is what's actually visible here (CSS-driven);
+            // just make sure no leftover pointer-events/inert state from a
+            // previous desktop match lingers on the (hidden) stacked cards.
+            cards.forEach((card) => {
+              card.style.pointerEvents = "";
+              card.inert = false;
+            });
+            return;
+          }
 
-      return () => {
-        window.removeEventListener("scrollcraft:mounted", refresh);
-        trigger.kill();
-        gsap.set(cards, { clearProps: "all" });
-      };
+          applyFrame(0);
+
+          // Not manually killed: created inside this gsap.matchMedia()
+          // callback, so `mm.revert()` (fired automatically the moment
+          // this condition stops matching, via GSAP's own resize
+          // listener) kills it — no React-render-timing race involved.
+          ScrollTrigger.create({
+            trigger: sectionRef.current,
+            start: "top 80px",
+            end: () => "+=" + n * 0.62 * window.innerHeight,
+            pin: stageRef.current,
+            scrub: 0.4,
+            onUpdate: (self) => applyFrame(self.progress * n),
+          });
+
+          // This pin can be created before ScrollCraft's own pinned
+          // sections above it have finished inserting their pin-spacing,
+          // which shifts this section down by thousands of px — see
+          // ScrollCraftMount's `scrollcraft:mounted` dispatch.
+          const refresh = () => ScrollTrigger.refresh();
+          if (window.__scrollCraftMounted) {
+            refresh();
+          } else {
+            window.addEventListener("scrollcraft:mounted", refresh, { once: true });
+          }
+
+          return () => {
+            window.removeEventListener("scrollcraft:mounted", refresh);
+          };
+        },
+      );
+
+      return () => mm.revert();
     },
-    { scope: sectionRef, dependencies: [stacked, items.length] },
+    { scope: sectionRef, dependencies: [items.length] },
   );
-
-  if (!stacked) {
-    return <div className={className}>{staticContent}</div>;
-  }
 
   return (
     <div ref={sectionRef} className={cn("relative", className)}>
-      <div ref={stageRef} className="relative h-[68vh] lg:h-[72vh]">
-        {items.map((item, i) => (
-          <div
-            key={item.key}
-            ref={(el) => {
-              cardRefs.current[i] = el;
-            }}
-            className="absolute inset-0"
-            style={{ zIndex: i + 1 }}
-          >
-            {item.content}
-          </div>
-        ))}
+      <div className="hidden lg:motion-safe:block">
+        <div ref={stageRef} className="relative h-[68vh] lg:h-[72vh]">
+          {items.map((item, i) => (
+            <div
+              key={item.key}
+              ref={(el) => {
+                cardRefs.current[i] = el;
+              }}
+              className="absolute inset-0"
+              style={{ zIndex: i + 1 }}
+            >
+              {item.content}
+            </div>
+          ))}
+        </div>
       </div>
+
+      <div className="block lg:motion-safe:hidden">{staticContent}</div>
     </div>
   );
 }
