@@ -61,7 +61,8 @@
   "packages": {
     "eyebrow": "Programs",
     "heading": "Treatment Programs",
-    "includesLabel": "Includes"
+    "includesLabel": "Includes",
+    "galleryLabel": "Programs gallery"
   },
   "trust": {
     "heading": "In Their Words"

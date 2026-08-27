@@ -61,7 +61,8 @@
   "packages": {
     "eyebrow": "البرامج",
     "heading": "برامج العلاج",
-    "includesLabel": "يشمل"
+    "includesLabel": "يشمل",
+    "galleryLabel": "معرض البرامج"
   },
   "trust": {
     "heading": "بكلماتهم"
