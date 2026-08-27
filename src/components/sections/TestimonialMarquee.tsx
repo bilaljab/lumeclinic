@@ -80,11 +80,18 @@ export function TestimonialMarquee() {
   const dragState = useRef<{ startX: number; startScrollLeft: number } | null>(null);
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
-    // Pause idle auto-scroll for touch too, even though native panning (not
-    // this handler) does the actual moving — without this the rAF loop kept
-    // nudging scrollLeft while a finger was mid-swipe, fighting the touch.
+    // Touch used to fall through to native scrolling instead of this handler,
+    // relying on the browser to move `scrollLeft` on its own. That raced the
+    // idle auto-scroll rAF loop below: if `draggingRef` ever read false for
+    // even one frame while a native touch-scroll gesture was still in
+    // progress, the loop's own `scrollLeft` write would fight the finger's
+    // position on every subsequent frame, reading as the strip freezing or
+    // refusing to move. Driving touch through the exact same manual
+    // scrollLeft path as mouse (paired with `touch-pan-y` on the element so
+    // the browser never also tries to scroll it natively) removes that race
+    // entirely — same approach already used for drag in SpatialShowcase and
+    // ProgramsCarousel.
     draggingRef.current = true;
-    if (e.pointerType === "touch") return;
     const el = wrapRef.current;
     if (!el) return;
     dragState.current = { startX: e.clientX, startScrollLeft: el.scrollLeft };
@@ -106,7 +113,7 @@ export function TestimonialMarquee() {
   return (
     <div
       ref={wrapRef}
-      className="rail relative mt-10 -mx-page-x-sm cursor-grab overflow-x-auto select-none active:cursor-grabbing lg:mx-0"
+      className="rail relative mt-10 -mx-page-x-sm cursor-grab touch-pan-y overflow-x-auto select-none active:cursor-grabbing lg:mx-0"
       onMouseEnter={() => {
         pausedRef.current = true;
       }}
