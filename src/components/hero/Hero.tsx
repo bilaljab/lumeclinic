@@ -28,6 +28,8 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
     >
       <HeroImageReveal>
         <div className="absolute inset-0" data-sc-parallax="-0.6">
+          {/* Always rendered: the LCP paint target, and the permanent
+              reduced-motion fallback the video is hidden in favor of. */}
           <Image
             src="/images/hero/hero-main-v3.jpg"
             alt=""
@@ -37,6 +39,19 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
             className="object-cover"
             style={{ objectPosition: "50% 17%" }}
           />
+          <video
+            aria-hidden
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/images/hero/hero-main-v3.jpg"
+            className="absolute inset-0 hidden h-full w-full object-cover motion-safe:block"
+            style={{ objectPosition: "50% 17%" }}
+          >
+            <source src="/videos/hero-loop.mp4" type="video/mp4" />
+          </video>
         </div>
         {/* A flat 80%-opacity tint here previously crushed the photo underneath to
             near-solid dark gray — a scrim only where the text actually sits
