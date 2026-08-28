@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+/** Client-UX validation only — no backend consumes this. Re-validate server-side before any real API trusts this data. */
 export const bookingSchema = z.object({
   treatmentSlug: z.string(),
   doctorSlug: z.string(),
@@ -15,7 +16,7 @@ export const bookingSchema = z.object({
   name: z.string().trim().min(2),
   phone: z.string().trim().min(8),
   email: z.union([z.literal(""), z.string().trim().email()]),
-  notes: z.string(),
+  notes: z.string().max(500),
 });
 
 export type BookingFormValues = z.infer<typeof bookingSchema>;

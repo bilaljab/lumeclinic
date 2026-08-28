@@ -315,6 +315,7 @@ export function BookingFlow() {
             <textarea
               id="notes"
               rows={3}
+              maxLength={500}
               className="border border-border bg-canvas px-4 py-3 text-body focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
               {...register("notes")}
             />

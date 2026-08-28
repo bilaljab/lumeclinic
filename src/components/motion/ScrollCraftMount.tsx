@@ -124,13 +124,14 @@ function adaptMobilePins() {
  * dev double-invoke would otherwise double every scroll/resize/pointermove
  * listener on the page.
  */
-export function ScrollCraftMount() {
+export function ScrollCraftMount({ nonce }: { nonce?: string }) {
   const mounted = useRef(false);
 
   return (
     <Script
       src="/scrollcraft.js"
       strategy="afterInteractive"
+      nonce={nonce}
       onReady={() => {
         if (mounted.current || !window.ScrollCraft) return;
         mounted.current = true;

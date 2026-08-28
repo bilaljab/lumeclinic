@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import "../globals.css";
 import { fontVariables } from "@/lib/fonts";
 import { routing } from "@/i18n/routing";
@@ -45,12 +46,13 @@ export default async function LocaleLayout({
   const lang = locale as keyof LocalizedText;
   const t = await getTranslations({ locale, namespace: "a11y" });
   const dir = locale === "ar" ? "rtl" : "ltr";
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html lang={locale} dir={dir} className={fontVariables} suppressHydrationWarning>
       <body className="min-h-screen pb-20 antialiased md:pb-0">
         <NextIntlClientProvider>
-          <ScrollCraftMount />
+          <ScrollCraftMount nonce={nonce} />
           <SkipLink label={t("skipToContent")} targetId="main-content" />
           <Navbar />
           <main id="main-content">{children}</main>
