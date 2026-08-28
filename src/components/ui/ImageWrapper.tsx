@@ -1,5 +1,6 @@
 import Image, { type ImageProps } from "next/image";
 import type { ReactNode } from "react";
+import { BLUR_DATA_URL } from "@/lib/blurPlaceholder";
 import { cn } from "@/lib/cn";
 
 type Props = ImageProps & {
@@ -22,7 +23,13 @@ export function ImageWrapper({ caption, wrapperClassName, className, alt, tilt, 
       data-sc-tilt={tilt}
       style={tilt ? { transformStyle: "preserve-3d" } : undefined}
     >
-      <Image alt={alt} className={cn("rounded-xs object-cover", className)} {...props} />
+      <Image
+        alt={alt}
+        className={cn("rounded-xs object-cover", className)}
+        placeholder="blur"
+        blurDataURL={BLUR_DATA_URL}
+        {...props}
+      />
       {caption ? (
         <figcaption className="mt-2 text-label uppercase text-neutral">{caption}</figcaption>
       ) : null}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { BLUR_DATA_URL } from "@/lib/blurPlaceholder";
 import { peakResult } from "@/data/results";
 import { treatments } from "@/data/treatments";
 import { doctors } from "@/data/doctors";
@@ -45,6 +46,8 @@ export async function BeforeAfterPeak({ lang }: { lang: keyof LocalizedText }) {
               alt={treatment.name[lang]}
               fill
               sizes="100vw"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
               className="object-cover"
             />
           </div>
@@ -58,6 +61,8 @@ export async function BeforeAfterPeak({ lang }: { lang: keyof LocalizedText }) {
               alt={treatment.name[lang]}
               fill
               sizes="100vw"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
               className="object-cover"
             />
           </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/Button";
+import { BLUR_DATA_URL } from "@/lib/blurPlaceholder";
 import { siteConfig } from "@/config/site";
 import { HeroEntrance } from "./HeroEntrance";
 import { HeroImageReveal } from "./HeroImageReveal";
@@ -36,6 +37,8 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
             fill
             priority
             sizes="100vw"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className="object-cover"
             style={{ objectPosition: "50% 17%" }}
           />

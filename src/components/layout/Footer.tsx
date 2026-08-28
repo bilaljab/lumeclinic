@@ -9,6 +9,7 @@ import { EditorialLink, editorialLinkClasses } from "@/components/ui/Link";
 import { cn } from "@/lib/cn";
 import { siteConfig } from "@/config/site";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { BLUR_DATA_URL } from "@/lib/blurPlaceholder";
 import type { LocalizedText } from "@/data/types";
 
 /**
@@ -47,6 +48,8 @@ export function Footer() {
             alt=""
             fill
             sizes="100vw"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className="object-cover"
             data-sc-parallax="-0.25"
           />
