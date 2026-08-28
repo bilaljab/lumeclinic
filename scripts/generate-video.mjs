@@ -21,7 +21,12 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import sharp from "sharp";
+import ffmpegPath from "ffmpeg-static";
+
+const execFileAsync = promisify(execFile);
 
 const KEY = (() => {
   const match = fs.readFileSync(".env.local", "utf8").match(/LTX_API_KEY=(.*)/);
@@ -112,8 +117,21 @@ async function main() {
   const buffer = Buffer.from(await res.arrayBuffer());
 
   fs.mkdirSync(path.dirname(OUT_VIDEO), { recursive: true });
-  fs.writeFileSync(OUT_VIDEO, buffer);
-  console.log(`OK  ${OUT_VIDEO} (${(buffer.length / 1024 / 1024).toFixed(2)} MB)`);
+  const rawPath = `${OUT_VIDEO}.raw.mp4`;
+  fs.writeFileSync(rawPath, buffer);
+
+  // LTX's own output has the moov atom (the index a player needs before it
+  // can decode anything) written at the very end of the file, after all the
+  // video data — a browser can end up needing most of the file downloaded
+  // just to start playing it. `-movflags +faststart` moves moov to the
+  // front; `-c copy` stream-copies rather than re-encoding, so this is a
+  // lossless remux, not a quality tradeoff.
+  console.log("Remuxing with faststart...");
+  await execFileAsync(ffmpegPath, ["-y", "-i", rawPath, "-c", "copy", "-movflags", "+faststart", OUT_VIDEO]);
+  fs.unlinkSync(rawPath);
+
+  const { size } = fs.statSync(OUT_VIDEO);
+  console.log(`OK  ${OUT_VIDEO} (${(size / 1024 / 1024).toFixed(2)} MB)`);
 }
 
 main().catch((err) => {
