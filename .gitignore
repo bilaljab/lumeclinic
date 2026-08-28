@@ -47,3 +47,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generate-video.mjs temp remux files
+public/videos/*.raw.mp4
+public/videos/*.tmp.mp4

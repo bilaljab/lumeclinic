@@ -5,7 +5,8 @@
  * framing exactly instead of letting the model reframe a square source
  * into a widescreen shot.
  *
- * Requires LTX_API_KEY in .env.local (console.ltx.io).
+ * Requires LTX_API_KEY in .env.local (console.ltx.io) and `ffmpeg` on PATH
+ * (used to faststart-remux the downloaded video).
  * Run: node scripts/generate-video.mjs
  *
  * API notes (docs.ltx.io):
@@ -24,7 +25,6 @@ import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import sharp from "sharp";
-import ffmpegPath from "ffmpeg-static";
 
 const execFileAsync = promisify(execFile);
 
@@ -118,17 +118,25 @@ async function main() {
 
   fs.mkdirSync(path.dirname(OUT_VIDEO), { recursive: true });
   const rawPath = `${OUT_VIDEO}.raw.mp4`;
+  const remuxedPath = `${OUT_VIDEO}.tmp.mp4`;
   fs.writeFileSync(rawPath, buffer);
 
-  // LTX's own output has the moov atom (the index a player needs before it
-  // can decode anything) written at the very end of the file, after all the
-  // video data — a browser can end up needing most of the file downloaded
-  // just to start playing it. `-movflags +faststart` moves moov to the
-  // front; `-c copy` stream-copies rather than re-encoding, so this is a
-  // lossless remux, not a quality tradeoff.
-  console.log("Remuxing with faststart...");
-  await execFileAsync(ffmpegPath, ["-y", "-i", rawPath, "-c", "copy", "-movflags", "+faststart", OUT_VIDEO]);
-  fs.unlinkSync(rawPath);
+  try {
+    // LTX's own output has the moov atom (the index a player needs before it
+    // can decode anything) written at the very end of the file, after all the
+    // video data — a browser can end up needing most of the file downloaded
+    // just to start playing it. `-movflags +faststart` moves moov to the
+    // front; `-c copy` stream-copies rather than re-encoding, so this is a
+    // lossless remux, not a quality tradeoff. Remuxing into a temp path and
+    // renaming over OUT_VIDEO only on success keeps the previous good video
+    // in place if ffmpeg is interrupted or fails.
+    console.log("Remuxing with faststart...");
+    await execFileAsync("ffmpeg", ["-y", "-i", rawPath, "-c", "copy", "-movflags", "+faststart", remuxedPath]);
+    fs.renameSync(remuxedPath, OUT_VIDEO);
+  } finally {
+    fs.rmSync(rawPath, { force: true });
+    fs.rmSync(remuxedPath, { force: true });
+  }
 
   const { size } = fs.statSync(OUT_VIDEO);
   console.log(`OK  ${OUT_VIDEO} (${(size / 1024 / 1024).toFixed(2)} MB)`);
