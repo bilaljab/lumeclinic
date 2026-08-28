@@ -108,7 +108,7 @@ export function MobileMenuTrigger({
   );
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         ref={triggerRef}
         type="button"

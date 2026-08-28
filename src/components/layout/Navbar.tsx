@@ -52,7 +52,7 @@ export function Navbar() {
           {siteConfig.logo.wordmark}
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-8 lg:flex">
           {anchors.map((a) => (
             <Link key={a.key} href={a.href} className="py-1 text-label uppercase">
               {t(a.key)}
@@ -60,7 +60,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-6 lg:flex">
           <Link href={pathname} locale={otherLocale} className="py-1 text-label uppercase">
             {t("switchLanguage")}
           </Link>
