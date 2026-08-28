@@ -5,6 +5,7 @@ import { BLUR_DATA_URL } from "@/lib/blurPlaceholder";
 import { siteConfig } from "@/config/site";
 import { HeroEntrance } from "./HeroEntrance";
 import { HeroImageReveal } from "./HeroImageReveal";
+import { HeroVideo } from "./HeroVideo";
 import type { LocalizedText } from "@/data/types";
 
 function arrowChain(text: string) {
@@ -42,19 +43,7 @@ export async function Hero({ lang }: { lang: keyof LocalizedText }) {
             className="object-cover"
             style={{ objectPosition: "50% 17%" }}
           />
-          <video
-            aria-hidden
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/images/hero/hero-main-v3.jpg"
-            className="absolute inset-0 hidden h-full w-full object-cover motion-safe:block"
-            style={{ objectPosition: "50% 17%" }}
-          >
-            <source src="/videos/hero-loop.mp4" type="video/mp4" />
-          </video>
+          <HeroVideo />
         </div>
         {/* A flat 80%-opacity tint here previously crushed the photo underneath to
             near-solid dark gray — a scrim only where the text actually sits
