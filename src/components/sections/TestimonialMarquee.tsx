@@ -62,9 +62,11 @@ export function TestimonialMarquee() {
   const autoScroll = !reducedMotion;
 
   const trackRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const pausedRef = useRef(false);
   const draggingRef = useRef(false);
+  const visibleRef = useRef(false);
 
   function applyOffset() {
     const track = trackRef.current;
@@ -80,6 +82,20 @@ export function TestimonialMarquee() {
     track.style.transform = `translateX(${offsetRef.current}px)`;
   }
 
+  // Stop ticking entirely while the strip is scrolled off-screen — otherwise
+  // this rAF loop runs for the whole page lifetime regardless of where the
+  // visitor is (every other continuous-motion device in this codebase, e.g.
+  // SpatialStageWebGL's frameloop="demand", already gates on visibility).
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      visibleRef.current = entry.isIntersecting;
+    });
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (!autoScroll) return;
     // RTL reads forward toward the left edge, so idle drift moves the
@@ -92,7 +108,7 @@ export function TestimonialMarquee() {
     function step(now: number) {
       const dt = (now - last) / 1000;
       last = now;
-      if (!pausedRef.current && !draggingRef.current) {
+      if (!pausedRef.current && !draggingRef.current && visibleRef.current) {
         offsetRef.current += direction * AUTO_SCROLL_PX_PER_SEC * dt;
         applyOffset();
       }
@@ -132,6 +148,7 @@ export function TestimonialMarquee() {
 
   return (
     <div
+      ref={rootRef}
       role="group"
       aria-roledescription="carousel"
       tabIndex={0}
