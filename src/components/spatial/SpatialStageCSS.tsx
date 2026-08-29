@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BLUR_DATA_URL } from "@/lib/blurPlaceholder";
 import type { SpatialShowcaseItem } from "./types";
 
 type Props = {
@@ -46,6 +47,8 @@ export function SpatialStageCSS({ items, activeIndex, rtl, neighborWindow = 1 }:
                 alt={item.image.alt}
                 fill
                 sizes="(min-width: 1024px) 45vw, 90vw"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
                 className="object-cover"
               />
             </div>

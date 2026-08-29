@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { SpatialStageCSS } from "./SpatialStageCSS";
+import { optimizedTextureSrc } from "./textureSrc";
 import type { SpatialShowcaseItem } from "./types";
 
 const SpatialStageWebGL = dynamic(
@@ -100,6 +101,35 @@ export function SpatialShowcase({
     observer.observe(el);
     return () => observer.disconnect();
   }, [hasBeenInView]);
+
+  // Mounting SpatialStageWebGL is (rightly) gated behind scroll visibility —
+  // no wasted WebGL contexts for a section the visitor hasn't reached. But
+  // gating the *download* behind that same trigger means scrolling into view
+  // kicks off a serial waterfall — fetch the three.js/@react-three/fiber
+  // chunk, parse it, mount <Canvas>, then only *then* start fetching the
+  // texture — with the canvas fully transparent for the whole chain. That
+  // waterfall, not image weight (already routed through the optimizer, see
+  // textureSrc.ts), is what actually reads as "the box sits empty." Warming
+  // both the chunk and the first texture during idle time — well before the
+  // visitor scrolls this far, decoupled from the mount gate — means the real
+  // fetches are usually already cache-hits by the time IntersectionObserver
+  // fires. Desktop/WebGL-only: the CSS fallback stage's plain <Image> has its
+  // own lazy-loading heuristics and this shouldn't spend mobile data early.
+  useEffect(() => {
+    if (!useWebGL || hasBeenInView) return;
+    const src = items[activeIndex]?.image.src;
+    if (!src) return;
+    const warm = () => {
+      import("./SpatialStageWebGL");
+      new window.Image().src = optimizedTextureSrc(src);
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(warm);
+      return () => window.cancelIdleCallback(handle);
+    }
+    const timer = window.setTimeout(warm, 200);
+    return () => window.clearTimeout(timer);
+  }, [useWebGL, hasBeenInView, items, activeIndex]);
 
   // R3F's <Canvas> mounting on this later, IntersectionObserver-triggered
   // render (rather than on initial page load) can measure its container

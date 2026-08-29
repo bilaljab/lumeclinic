@@ -9,7 +9,7 @@ export default function middleware(request: NextRequest) {
   const csp = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-    style-src 'self';
+    style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
